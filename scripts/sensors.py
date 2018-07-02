@@ -1,5 +1,6 @@
 from Adafruit_BME280 import *
 import threading
+import time
 
 class UpdateSensors(threading.Thread):
     def __init__(self):
@@ -8,11 +9,12 @@ class UpdateSensors(threading.Thread):
         tstart = time.time()
         
     def run(self):
-        while (stdscr.getch() == -1) :
+        while (True) :
             degrees = sensor.read_temperature()
             pascals = sensor.read_pressure()
             hectopascals = pascals / 100
             humidity = sensor.read_humidity()
+            print degrees
             time.sleep(1)
 
 test = UpdateSensors()
