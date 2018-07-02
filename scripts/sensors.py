@@ -17,7 +17,7 @@ class UpdateSensors(threading.Thread):
             humidity = self.sensor.read_humidity()
             timestamp = int(time.time())
             print "time: " + str(timestamp) + " | temp: " + str(degrees) + \
-            "°C | pressure: " + str(hectopascals) + "hPa | humidity: " + str(humidity) + "%"
+            "deg C | pressure: " + str(hectopascals) + "hPa | humidity: " + str(humidity) + "%"
             save_measure("TEMPERATURE", timestamp, degrees)
             save_measure("PRESSURE", timestamp, hectopascals)
             save_measure("HUMIDITY", timestamp, humidity)
