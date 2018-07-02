@@ -12,7 +12,7 @@ if __name__ == '__main__':
     temperatures['17:00'] = 27.0
 
     measures = dict()
-    measures[db.Measure.TEMPERATURE] = temperatures
+    measures["TEMPERATURE"] = temperatures
 
     measure_file = open('../storage/measures.json', 'w')
     try:
@@ -20,9 +20,9 @@ if __name__ == '__main__':
     finally:
         measure_file.close()
 
-    measures_all = db.get_measure_all(db.Measure.TEMPERATURE)
+    measures_all = db.get_measure_all("TEMPERATURE")
     print(measures_all)
 
-    db.save_measure(db.Measure.TEMPERATURE, '18:00', 25.5)
-    measures_all_modified = db.get_measure_all(db.Measure.TEMPERATURE)
+    db.save_measure("TEMPERATURE", '18:00', 25.5)
+    measures_all_modified = db.get_measure_all("TEMPERATURE")
     print(measures_all_modified)
