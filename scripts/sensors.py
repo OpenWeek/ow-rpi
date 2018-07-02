@@ -1,4 +1,5 @@
 from Adafruit_BME280 import *
+from db_handler import *
 import threading
 import time
 
@@ -14,7 +15,12 @@ class UpdateSensors(threading.Thread):
             pascals = self.sensor.read_pressure()
             hectopascals = pascals / 100
             humidity = self.sensor.read_humidity()
-            print degrees
+            timestamp = int(time.time())
+            print "time: " + str(timestamp) + " | temp: " + str(degrees) + \
+            "deg C | pressure: " + str(hectopascals) + "hPa | humidity: " + str(humidity) + "%"
+            save_measure("TEMPERATURE", timestamp, degrees)
+            save_measure("PRESSURE", timestamp, hectopascals)
+            save_measure("HUMIDITY", timestamp, humidity)
             time.sleep(1)
 
 test = UpdateSensors()
