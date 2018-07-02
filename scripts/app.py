@@ -35,5 +35,6 @@ class test:
         return "Hello world from python"
 
 if __name__ == "__main__":
+    web.config.debug = True
     app = web.application(urls, globals())
     app.run()
