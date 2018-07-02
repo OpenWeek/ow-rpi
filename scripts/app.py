@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import web
+import json
 from jinja2 import Environment, FileSystemLoader
 
-urls = ("/", "main",
-        "/chart", "chart"
+urls = ("/", "chart",
         "/test", "test"
 )
 
@@ -36,17 +36,39 @@ class test:
         return "Hello world from python"
 
 
+class update_quick_chart:
+    def GET(self):
+        web.header('Content-Type', 'application/json')
+        last_time = web.input()
+        measures = get_measure_all("TEMPERATURE")
+        # TODO: get right values
+        return json.dumps(measures)
+
 class chart:
     def GET(self):
-        # TODO: request to api
-        # web.header('Content-Type', 'text/??')
-        user_input = web.input()
-
-        return "plop"
-
-class main:
-    def GET(self):
         # TODO: get base values from api
+        context = {
+                "value1" : "Python",
+                "value2" : "Jinja2",
+                "base_chart_data": json.dumps(
+                    {
+                        "TEMPERATURE": [
+                            {'x': 1, 'y':20},
+                            {'x': 3, 'y':25},
+                            {'x': 7, 'y':22}
+                        ],
+                        "HUMIDITY": [
+                            {'x': 0, 'y':0.3},
+                            {'x': 3, 'y':0.7},
+                            {'x': 8, 'y':0.6}
+                        ],
+                        "PRESSURE": [
+                            {'x': 2, 'y':1050},
+                            {'x': 4, 'y':995},
+                            {'x': 7, 'y':1003}
+                        ]
+                    })
+                }
         return render_template("chart.html", **context)
 
 
