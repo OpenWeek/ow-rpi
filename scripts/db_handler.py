@@ -1,4 +1,5 @@
 import json
+import fcntl
 
 """
 JSON format:
@@ -23,16 +24,20 @@ def save_measure(measure, time, value):
     saved, -1 otherwise
     """
 
-    if measure!="TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
+    if measure != "TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
         return -1
 
     measures = dict()
 
-    temperature_file = open('../storage/measures.json', 'r')
+    measure_file = open('../storage/measures.json', 'r')
     try:
-        measures = json.load(temperature_file)
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        measures = json.load(measure_file)
+    except IOError:
+        print("Concurrent access")
+        return -1
     finally:
-        temperature_file.close()
+        measure_file.close()
 
     measures[measure][time] = value
 
@@ -51,7 +56,7 @@ def get_measure_all(measure):
     all the data that are recorded in a Dictionary (time, value)
     """
 
-    if measure!="TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
+    if measure != "TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
         print("error "+measure)
         return -1
 
@@ -59,7 +64,11 @@ def get_measure_all(measure):
 
     measure_file = open('../storage/measures.json', 'r')
     try:
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         measures = json.load(measure_file)
+    except IOError:
+        print("Concurrent access")
+        return -1
     finally:
         measure_file.close()
 
