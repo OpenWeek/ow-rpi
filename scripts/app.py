@@ -12,7 +12,7 @@ def render_template(template_name, **context):
     globals = context.pop('globals', [])
 
     jinja_env = Environment(
-            loader = FileSystemLoader("/var/www/openweek/templates"),
+            loader = FileSystemLoader("../templates"),
             extensions=extensions
     )
     
