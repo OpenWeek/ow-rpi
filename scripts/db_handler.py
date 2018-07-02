@@ -64,3 +64,12 @@ def get_measure_all(measure):
         measure_file.close()
 
     return measures[measure]
+
+def get_measure_from(measure, from):
+    """
+    Get all entries of the desired measure (Temperature, Pression or Humidity) from Database (JSON)
+    whit key(-time-) > from:
+    all the data that are recorded in a Dictionary (time, value)
+    """
+
+    measures = get_measure_all(measure)
