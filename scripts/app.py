@@ -48,8 +48,6 @@ class chart:
     def GET(self):
         # TODO: get base values from api
         context = {
-                "value1" : "Python",
-                "value2" : "Jinja2",
                 "base_chart_data": json.dumps(
                     {
                         "TEMPERATURE": [
