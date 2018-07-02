@@ -3,7 +3,8 @@
 import web
 from jinja2 import Environment, FileSystemLoader
 
-urls = ("/", "hello",
+urls = ("/", "main",
+        "/chart", "chart"
         "/test", "test"
 )
 
@@ -15,8 +16,8 @@ def render_template(template_name, **context):
             loader = FileSystemLoader("../templates"),
             extensions=extensions
     )
-    
-    
+
+
     jinja_env.globals.update(globals)
 
     return jinja_env.get_template(template_name).render(context)
@@ -33,6 +34,21 @@ class hello:
 class test:
     def GET(self):
         return "Hello world from python"
+
+
+class chart:
+    def GET(self):
+        # TODO: request to api
+        # web.header('Content-Type', 'text/??')
+        user_input = web.input()
+
+        return "plop"
+
+class main:
+    def GET(self):
+        # TODO: get base values from api
+        return render_template("chart.html", **context)
+
 
 if __name__ == "__main__":
     web.config.debug = True
