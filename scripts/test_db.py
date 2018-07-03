@@ -1,8 +1,29 @@
 import db_handler as db
-import json
 
 if __name__ == '__main__':
 
+    db.save_measure("temperature", 1534464000, 30.5)
+    db.save_measure("temperature", 1534464300, 27)
+    db.save_measure("temperature", 1534464600, 28.7)
+    db.save_measure("temperature", 1534464900, 29.4)
+    db.save_measure("temperature", 1534465200, 30.5)
+    db.save_measure("temperature", 1534465500, 27)
+    db.save_measure("temperature", 1534465800, 28.7)
+    db.save_measure("temperature", 1534466100, 29.4)
+    db.save_measure("pressure", 1534464000, 1013)
+    db.save_measure("pressure", 1534464300, 1025)
+    db.save_measure("pressure", 1534464600, 1056)
+    db.save_measure("pressure", 1534464900, 1006)
+
+    db.get_measure_hour("temperature")
+    db.get_measure_hour("pressure")
+
+
+
+
+
+
+    """
     temperatures = dict()
 
     temperatures['13:00'] = 30.0
@@ -26,3 +47,4 @@ if __name__ == '__main__':
     db.save_measure("TEMPERATURE", '18:00', 25.5)
     measures_all_modified = db.get_measure_all("TEMPERATURE")
     print(measures_all_modified)
+    """
