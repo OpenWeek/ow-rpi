@@ -5,52 +5,44 @@
         <div class="col-lg-2"></div>
         <div class="col-lg-8">
           <canvas id="myChart" width="200" height="100"></canvas>
-          <input class="sli" id="ex4" type="text"/>
+          <input data-slider-value="0" id="ex4" type="text"/>
         </div>
         <div class="col-lg-2"></div>
     </div>
     <script>
 
         $("#ex4").slider({
-          ticks: [0, 100, 200, 300, 400],
+          ticks: [0, 1, 2, 3, 4],
           ticks_labels: ["Now", "Hours", "Days", "Weeks", "Months"],
           value: 0,
-          ticks_snap_bounds: 100
-
-
+          step:1
 
         });
-        var data = {{ base_chart_data }}
-        function updateGraph(){
-            if (this.readyState === 4 && this.status === 200){
-                var nd = this.responseText;
-                console.log(nd);
-                //data.TEMPERATURE.push(nd.TEMPERATURE);
-                //window.myLine.update();
-                console.log("done");
-            }
-        };
-        function getGraphUpdate(){
-            /*var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = updateGraph();
-            var lastData = data.TEMPERATURE;
 
-            xhttp.open("GET", "chart?last="+lastData[lastData.length-1].x, true);
-            xhttp.send();*/
-            var lastData = data.TEMPERATURE;
-            $.ajax({
-                url: "chart?last="+lastData[lastData.length-1].x,
-                success: function(result){
-                  var nd = result;
-                  //console.log(nd);
-                  for (i in nd.TEMPERATURE){
-                    data.TEMPERATURE.push(nd.TEMPERATURE[i]);
+        $("#ex4").on("change", function(val){
+            
+        });
+
+        var data = {{ base_chart_data }}
+        var dataParams = ["TEMPERATURE", "PRESSURE", "HUMIDITY"];
+        var dataColors = ["red", "green", "blue"];
+        var timeFormat = true;
+        function getGraphUpdate(){
+            if (timeFormat){
+              var lastData = data.TEMPERATURE;
+              $.ajax({
+                  url: "chart?last="+lastData[lastData.length-1].x,
+                  success: function(result){
+                    var nd = result;
+                    for (j in dataParams){
+                      for (i in nd[dataParams[j]]){
+                        data[dataParams[j]].push(nd[dataParams[j]][i]);
+                      }
+                    }
+                    window.myLine.update();
                   }
-                  console.log(data);
-                  window.myLine.update();
-                  console.log("done");
-                }
-            });
+              });
+            }
         }
         var timeFormat = 'DD/MM/YYYY';
 
@@ -61,19 +53,22 @@
                     {
                         label: "Temperature",
                         data: data.TEMPERATURE,
-                        borderColor: 'red',
+                        borderColor: dataColors[0],
+                        yAxisID: "y0",
                         fill: false
                     },
                     {
                         label: "Pressure",
                         data: data.PRESSURE,
-                        borderColor: 'green',
+                        borderColor: dataColors[1],
+                        yAxisID: "y1",
                         fill: false
                     },
                     {
                         label: "Humidity",
                         data: data.HUMIDITY,
-                        borderColor: 'blue',
+                        borderColor: dataColors[2],
+                        yAxisID: "y2",
                         fill: false
                     }
                 ]
@@ -93,12 +88,51 @@
                         }
                     }],
                     yAxes: [{
+                        id: "y0",
+                        position: "left",
+                        // padding: 100,
+                        ticks: {
+                          suggestedMax: 30,
+                          suggestedMin: 15,
+                          // padding: 100,
+                          fontColor: dataColors[0],
+                        },
                         scaleLabel: {
                             display:     true,
-                            labelString: 'value'
+                            labelString: '°C'
+                        }
+                    },
+                    {
+                        id: "y1",
+                        position: "right",
+                        ticks: {
+                          fontColor: dataColors[1],
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'hPa'
+                        }
+                    },
+                    {
+                        id: "y2",
+                        position: "right",
+                        ticks: {
+                          fontColor: dataColors[2],
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: '%'
                         }
                     }]
-                }
+                },
+              //   layout: {
+              //     padding: {
+              //         left: 50,
+              //         right: 50,
+              //         top: 50,
+              //         bottom: 50
+              //     }
+              // }
             }
         };
 
@@ -108,9 +142,8 @@
         };
 
 
-        getGraphUpdate();
 
-
+        setInterval(getGraphUpdate,300000);
 
     </script>
 {% endblock %}
