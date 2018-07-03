@@ -31,12 +31,26 @@
             }
         };
         function getGraphUpdate(){
-            var xhttp = new XMLHttpRequest();
+            /*var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = updateGraph();
             var lastData = data.TEMPERATURE;
 
             xhttp.open("GET", "chart?last="+lastData[lastData.length-1].x, true);
-            xhttp.send();
+            xhttp.send();*/
+            var lastData = data.TEMPERATURE;
+            $.ajax({
+                url: "chart?last="+lastData[lastData.length-1].x,
+                success: function(result){
+                  var nd = result;
+                  //console.log(nd);
+                  for (i in nd.TEMPERATURE){
+                    data.TEMPERATURE.push(nd.TEMPERATURE[i]);
+                  }
+                  console.log(data);
+                  window.myLine.update();
+                  console.log("done");
+                }
+            });
         }
         var timeFormat = 'DD/MM/YYYY';
 
