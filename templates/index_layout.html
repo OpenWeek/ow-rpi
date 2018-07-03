@@ -13,6 +13,109 @@
     <script type="text/javascript" src="/static/js/bootstrap-slider.min.js"></script>
 </head>
 <body>
+  <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-8">
+        <canvas id="myChart" width="200" height="100"></canvas>
+        <input data-slider-value="0" id="ex4" type="text"/>
+      </div>
+      <div class="col-lg-2"></div>
+  </div>
+  <script>
+
+      $("#ex4").slider({
+        ticks: [0, 1, 2, 3, 4],
+        ticks_labels: ["Now", "Hours", "Days", "Weeks", "Months"],
+        value: 0,
+        step:1
+
+      });
+
+      $("#ex4").on("change", function(val){
+
+      });
 	{% block body %}{% endblock %}
+  var dataLength = dataParams.names.length;
+  var dataInd = Array.from(Array(dataLength).keys());
+
+  console.log(dataParams.names);
+  var dataColors = ["red", "green", "blue"];
+  var timeFormat = true;
+  function getGraphUpdate(){
+      if (timeFormat){
+        var lastData = data.TEMPERATURE;
+        $.ajax({
+            url: "chart?last="+lastData[lastData.length-1].x,
+            success: function(result){
+                var nd = result;
+                dataParams.names.forEach( iname => {
+                    nd[iname].forEach( jelem => {
+                      data[iname].push(jelem)
+                    })
+                });
+                window.myLine.update();
+            }
+        });
+      }
+  }
+  var timeFormat = 'DD/MM/YYYY';
+
+
+
+  var config = {
+      type:    'line',
+      data:    {
+          datasets: dataInd.map(function(i) {
+            return {
+              label: dataParams.labels[i],
+              data: data[dataParams.names[i]],
+              borderColor: dataParams.colors[i],
+              yAxisID: "y"+i,
+              fill: false
+            };
+          })
+      },
+      options: {
+          responsive: true,
+          title:      {
+              display: true,
+              text:    "Weather station"
+          },
+          scales:     {
+              xAxes: [{
+                  type:       "time",
+                  scaleLabel: {
+                      display:     true,
+                      labelString: 'Date'
+                  }
+              }],
+              yAxes: dataInd.map(function(i) {
+                return {
+                  id: "y"+i,
+                  position: dataParams.positions[i],
+                  ticks: {
+                    suggestedMin: dataParams.mins[i],
+                    suggestedMax: dataParams.maxs[i],
+                    fontColor: dataParams.colors[i]
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: dataParams.units[i]
+                  }
+                };
+              })
+          },
+      }
+  };
+
+  window.onload = function () {
+      var ctx       = document.getElementById("myChart").getContext("2d");
+      window.myLine = new Chart(ctx, config);
+  };
+
+  setInterval(getGraphUpdate,300000);
+
+</script>
+
 </body>
 </html>

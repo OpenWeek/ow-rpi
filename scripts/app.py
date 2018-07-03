@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import web
 import json
@@ -64,7 +65,7 @@ class chart:
     def GET(self):
         # TODO: get base values from api
         context = {
-                "base_chart_data": json.dumps(
+                "chart_data": json.dumps(
                     {
                         "TEMPERATURE": [
                             {'x': 1530542612000, 'y':20},
@@ -81,7 +82,18 @@ class chart:
                             {'x': 1530542647000, 'y':995},
                             {'x': 1530542649000, 'y':1003}
                         ]
-                    })
+                    }),
+                "data_params": json.dumps(
+                    {
+                        "names": ["TEMPERATURE", "PRESSURE", "HUMIDITY"],
+                        "labels": ["Temperature", "Pressure", "Humidity"],
+                        "units": ["°C", "hPa", "%"],
+                        "colors": ["red", "green", "blue"],
+                        "positions": ["left", "right", "right"],
+                        "mins": [15, 990, 0.2],
+                        "maxs": [30, 1120, 0.7]
+                    }
+                )
                 }
         return render_template("chart.html", **context)
 
