@@ -2,11 +2,24 @@
 
 {% block body%}
     <div class="row">
-        <div class="col-lg-3"></div>
-        <div class="col-lg-6"><canvas id="myChart" width="200" height="100"></canvas></div>
-        <div class="col-lg-3"></div>
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+          <canvas id="myChart" width="200" height="100"></canvas>
+          <input class="sli" id="ex4" type="text"/>
+        </div>
+        <div class="col-lg-2"></div>
     </div>
     <script>
+
+        $("#ex4").slider({
+          ticks: [0, 100, 200, 300, 400],
+          ticks_labels: ["Now", "Hours", "Days", "Weeks", "Months"],
+          value: 0,
+          ticks_snap_bounds: 100
+
+
+
+        });
         var timeFormat = 'DD/MM/YYYY';
         var data = {{ base_chart_data }}
 
@@ -38,7 +51,7 @@
                 responsive: true,
                 title:      {
                     display: true,
-                    text:    "Chart.js Time Scale"
+                    text:    "Weather station"
                 },
                 scales:     {
                     xAxes: [{
