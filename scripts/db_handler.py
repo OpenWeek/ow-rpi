@@ -33,7 +33,7 @@ def get_measure_hour(measure):
 
 def get_measure_week(measure):
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "-1week")
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "now", "-e", "+1week")
 
     start, end, step = result[0]
     ds = result[1]

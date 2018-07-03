@@ -2,12 +2,12 @@ import db_handler as db
 
 if __name__ == '__main__':
 
-    start = 1534463400
-    """
+    start = 1508803200
+"""
     for t in range(7*24*3600/5):
-        db.save_measure("temperature",start+t*300, 10+0.01*t)
-        db.save_measure("pressure", start+t*300, 1000+0.1*t)
-    """
+        db.save_measure("temperature",start-t*300, 10+0.01*t)
+        db.save_measure("pressure", start-t*300, 1000+0.1*t)
+"""
     db.get_measure_week("temperature")
     db.get_measure_week("pressure")
 
