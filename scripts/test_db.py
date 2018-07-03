@@ -3,9 +3,9 @@ import db_handler as db
 if __name__ == '__main__':
 
     db.save_measure("temperature", 1534464000, 30.5)
-    db.save_measure("temperature", 1534464300, 27)
-    db.save_measure("temperature", 1534464600, 28.7)
-    db.save_measure("temperature", 1534464900, 29.4)
+    db.save_measure("temperature", 1534464300, 17)
+    db.save_measure("temperature", 1534464600, 28.1)
+    db.save_measure("temperature", 1534464900, 29.0)
     db.save_measure("temperature", 1534465200, 30.5)
     db.save_measure("temperature", 1534465500, 27)
     db.save_measure("temperature", 1534465800, 28.7)
