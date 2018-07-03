@@ -16,7 +16,7 @@ def init_measure(name):
 
 def save_measure(measure, time, value):
 
-    rrdtool.update("../storage/"+measure+".rrd", str(time)+":"+str(value))
+    rrdtool.update("../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 
 def get_measure_hour(measure):
