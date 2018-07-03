@@ -1,78 +1,32 @@
 import json
 import fcntl
+import rrdtool
 
-"""
-JSON format:
-{
-    "measure": {
-                "timestamp-1": 28.5
-                "timestamp-2": 30.0
-                }
-    "measure2": {
-                "timestamp-1": 0.3
-                "timestamp-2": 0.7
-                }
-}
-"""
+def init_measure(name):
+    rrdtool.create(
+        "../storage/"+name+".rrd",
+        "--start", "now",
+        "--step", "300",
+        "RRA:LAST:0.5:1:12",
+        "RRA:AVERAGE:0.5:1:12",
+        "RRA:AVERAGE:0.5:12:288",
+        "RRA:AVERAGE:0.5:288:2016",
+        "RRA:AVERAGE:0.5:2016:8640",
+        "DS:measure:GAUGE:3600:-5000:5000")
 
 def save_measure(measure, time, value):
-    """
-    Save the measure (Temperature, Pression or Humidity) in Database (JSON),
-    with the time it was recorded, and its value. Returns 0 if the measure is
-    saved, -1 otherwise
-    """
 
-    if measure != "TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
-        return -1
-
-    measures = dict()
-
-    measure_file = open('../storage/measures.json', 'r')
-    try:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX)
-        measures = json.load(measure_file)
-    except IOError:
-        print("Concurrent access")
-        return -1
-    finally:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_UN)
-        measure_file.close()
-
-    measures[measure][time] = value
-
-    temperature_file = open('../storage/measures.json', 'w')
-    try:
-        json.dump(measures, temperature_file)
-    finally:
-        temperature_file.close()
-
-    return 0
+    rrdtool.update("../storage/station"+measure+".rrd", time+":"+str(value))
 
 
-def get_measure_all(measure):
-    """
-    Get the desired measure (Temperature, Pression or Humidity) from Database (JSON):
-    all the data that are recorded in a Dictionary (time, value)
-    """
+def get_measure_hour(measure):
 
-    if measure != "TEMPERATURE" and measure != "PRESSURE" and measure != "HUMIDITY":
-        print("error "+measure)
-        return -1
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "5m", "-s", "end-1hour")
+    start, end, step = result[0]
+    ds = result[1]
+    rows = result[2]
 
-    measures = dict()
-
-    measure_file = open('../storage/measures.json', 'r')
-    try:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX)
-        measures = json.load(measure_file)
-    except IOError:
-        print("Concurrent access")
-        return -1
-    finally:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_UN)
-        measure_file.close()
-
-    return measures[measure]
+    print(rows)
 
 def get_measure_from(measure, start_time):
     """
