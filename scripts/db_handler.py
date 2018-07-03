@@ -29,12 +29,13 @@ def save_measure(measure, time, value):
 
     measure_file = open('../storage/measures.json', 'r')
     try:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX)
         measures = json.load(measure_file)
     except IOError:
         print("Concurrent access")
         return -1
     finally:
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_UN)
         measure_file.close()
 
     measures[measure][time] = value
@@ -62,17 +63,18 @@ def get_measure_all(measure):
 
     measure_file = open('../storage/measures.json', 'r')
     try:
-        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_EX)
         measures = json.load(measure_file)
     except IOError:
         print("Concurrent access")
         return -1
     finally:
+        fcntl.flock(measure_file.fileno(), fcntl.LOCK_UN)
         measure_file.close()
 
     return measures[measure]
 
-def get_measure_from(measure, from):
+def get_measure_from(measure, start_time):
     """
     Get all entries of the desired measure (Temperature, Pression or Humidity) from Database (JSON)
     whit key(-time-) > from:
