@@ -1,14 +1,28 @@
 import db_handler as db
-import json
 
 if __name__ == '__main__':
 
-    db.save_measure(1, "temperature", 30.5)
-    db.save_measure(1, "temperature", 27)
-    db.save_measure(1, "temperature", 28.7)
-    db.save_measure(1, "temperature", 29.4)
+    db.save_measure("temperature", 30.5)
+    db.save_measure("temperature", 27)
+    db.save_measure("temperature", 28.7)
+    db.save_measure("temperature", 29.4)
+    db.save_measure("temperature", 30.5)
+    db.save_measure("temperature", 27)
+    db.save_measure("temperature", 28.7)
+    db.save_measure("temperature", 29.4)
+    db.save_measure("pressure", 1013)
+    db.save_measure("pressure", 1025)
+    db.save_measure("pressure", 1056)
+    db.save_measure("pressure", 1006)
 
-    db.get_measure_hour(1, "temperature")
+    db.get_measure_hour("temperature")
+    db.get_measure_hour("pressure")
+
+
+
+
+
+
     """
     temperatures = dict()
 
