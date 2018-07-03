@@ -21,7 +21,8 @@ def save_measure(measure, time, value):
 
 def get_measure_hour(measure):
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "epoch+1534463000s", "-e", "epoch+1534466100")
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "-1hour")
+    #result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "epoch+1534463000s", "-e", "epoch+1534466100")
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
