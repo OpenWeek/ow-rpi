@@ -7,8 +7,25 @@
         <div class="col-lg-3"></div>
     </div>
     <script>
-        var timeFormat = 'DD/MM/YYYY';
         var data = {{ base_chart_data }}
+        function updateGraph(){
+            if (this.readyState === 4 && this.status === 200){
+                var nd = this.responseText;
+                console.log(nd);
+                //data.TEMPERATURE.push(nd.TEMPERATURE);
+                //window.myLine.update();
+                console.log("done");
+            }
+        };
+        function getGraphUpdate(){
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = updateGraph();
+            var lastData = data.TEMPERATURE;
+
+            xhttp.open("GET", "chart?last="+lastData[lastData.length-1].x, true);
+            xhttp.send();
+        }
+        var timeFormat = 'DD/MM/YYYY';
 
         var config = {
             type:    'line',
@@ -62,6 +79,11 @@
             var ctx       = document.getElementById("myChart").getContext("2d");
             window.myLine = new Chart(ctx, config);
         };
+
+
+        getGraphUpdate();
+
+
 
     </script>
 {% endblock %}

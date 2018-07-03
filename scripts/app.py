@@ -2,9 +2,11 @@
 
 import web
 import json
+from db_handler import get_measure_all
 from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
+        "/chart","update_quick_chart",
         "/test", "test"
 )
 
@@ -39,8 +41,22 @@ class test:
 class update_quick_chart:
     def GET(self):
         web.header('Content-Type', 'application/json')
-        last_time = web.input()
-        measures = get_measure_all("TEMPERATURE")
+        last_time = web.input().last
+        print last_time
+        measures =  {
+            "TEMPERATURE": [
+                {'x': 1530542750000, 'y':30},
+                {'x': 1530542760000, 'y':35}
+            ],
+            "HUMIDITY": [
+                {'x': 1530542690000, 'y':0.2},
+                {'x': 1530542760000, 'y':0.4}
+            ],
+            "PRESSURE": [
+                {'x': 1530542685000, 'y':980},
+                {'x': 1530542760000, 'y':1035}
+            ]
+        }# get_measure_all("TEMPERATURE")
         # TODO: get right values
         return json.dumps(measures)
 
