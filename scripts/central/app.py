@@ -29,19 +29,16 @@ class update_quick_chart:
         web.header('Content-Type', 'application/json')
         last_time = web.input().last
         print last_time
+
+        def filter(arr):
+            return [x for x in arr if x['x'] > last_time]
         measures =  {
-            "TEMPERATURE": [
-                {'x': 1530542750000, 'y':30},
-                {'x': 1530542760000, 'y':35}
-            ],
-            "HUMIDITY": [
-                {'x': 1530542690000, 'y':0.2},
-                {'x': 1530542760000, 'y':0.4}
-            ],
-            "PRESSURE": [
-                {'x': 1530542685000, 'y':980},
-                {'x': 1530542760000, 'y':1035}
-            ]
+            "TEMPERATURE": filter(get_measure_now("temperature")),
+            # "HUMIDITY": [
+            #     {'x': 1530542690000, 'y':0.2},
+            #     {'x': 1530542760000, 'y':0.4}
+            # ],
+            "PRESSURE":  filter(get_measure_now("pressure"))
         }# get_measure_all("TEMPERATURE")
         # TODO: get right values
         return json.dumps(measures)
