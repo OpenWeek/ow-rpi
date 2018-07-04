@@ -5,13 +5,14 @@ import rrdtool
 def init_measure(name):
     rrdtool.create(
         "../storage/"+name+".rrd",
-        "--start", "now",
+        "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
         "RRA:AVERAGE:0.5:1:12",
         "RRA:AVERAGE:0.5:12:24",
         "RRA:AVERAGE:0.5:288:7",
         "RRA:AVERAGE:0.5:2016:4",
+        "RRA:AVERAGE:0.5:8064:12",
         "DS:measure:GAUGE:3600:-5000:5000")
 
 def save_measure(measure, time, value):
@@ -20,7 +21,9 @@ def save_measure(measure, time, value):
 
 
 def get_measure_hour(measure):
+    return get_measure_from(measure, 3600)
 
+<<<<<<< HEAD
     result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "-1hour")
 
     start, end, step = result[0]
@@ -34,20 +37,38 @@ def get_measure_hour(measure):
 def get_measure_week(measure):
 
     result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "-1week")
+=======
+def get_measure_day(measure):
+    return get_measure_from(measure, 24*3600)
+>>>>>>> e620696eaaf1ef554df3777c7a60a2d18cbc6c9d
+
+def get_measure_week(measure):
+    return get_measure_from(measure, 7*24*3600)
+
+def get_measure_month(measure):
+    return get_measure_from(measure, 4*7*24*3600)
+
+def get_measure_year(measure):
+    return get_measure_from(measure, 12*4*7*24*3600)
+
+def get_measure_from(measure, interval):
+    """
+    Get all entries of the desired measure (temperature, pression, humidity, ...) from Database (rrd)
+    recorded in the last <interval> seconds.
+    """
+
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
+    ret = []
+    ts = start
+    for i in range(len(rows)):
+	ret.append({})
+	ret[i]['x'] = ts
+	ret[i]['y'] = rows[i][0]
+	ts += step
 
     print("{} {} {}".format(start, end, step))
-    print(ds)
-    print(rows)
-
-def get_measure_from(measure, start_time):
-    """
-    Get all entries of the desired measure (Temperature, Pression or Humidity) from Database (JSON)
-    whit key(-time-) > from:
-    all the data that are recorded in a Dictionary (time, value)
-    """
-
-    measures = get_measure_all(measure)
+    return ret
