@@ -32,15 +32,35 @@
       });
 
       $("#ex4").on("change", function(val){
+        // TODO : smooth transition
+        console.log(window.myLine.scales['y0'])
+          //window.myLine.scales['y0'].hidden = true
+          $.ajax({
+              url: "update?format="+val.value.newValue,
+              success: function(result){
+                hiddenTest = true;
 
+                dataParams.names.forEach(iname => {
+                    data[iname].length = 0;
+                    result[iname].forEach(t => {
+                      data[iname].push(t);
+                    })
+
+                })
+                window.myLine.update();
+              }
+          });
       });
 	{% block body %}{% endblock %}
   var dataLength = dataParams.names.length;
   var dataInd = Array.from(Array(dataLength).keys());
-
+  var dateFormat = ["second"]
   console.log(dataParams.names);
-  var dataColors = ["red", "green", "blue"];
+
   var timeFormat = true;
+
+  var hiddenTest = false;
+
   function getGraphUpdate(){
       if (timeFormat){
         var lastData = data.TEMPERATURE;
@@ -59,8 +79,6 @@
       }
   }
   var timeFormat = 'DD/MM/YYYY';
-
-
 
   var config = {
       type:    'line',
@@ -83,10 +101,20 @@
           },
           scales:     {
               xAxes: [{
-                  type:       "time",
+                  id: 'x0',
+                  type: "time",
                   scaleLabel: {
                       display:     true,
                       labelString: 'Date'
+                  },
+                  time: {
+                    unitStepSize: 10,
+                    displayFormats: {
+                      'second' : 'HH:mm:ss',
+                      'minute': 'HH:mm',
+                      'hour': 'DD MMM HH:mm',
+                       'day': 'DD MMM'
+                    }
                   }
               }],
               yAxes: dataInd.map(function(i) {
@@ -101,7 +129,16 @@
                   scaleLabel: {
                     display: true,
                     labelString: dataParams.units[i]
+                  },
+                  beforeUpdate: function(){
+                    console.log("gotten: "+hiddenTest)
+                    if(hiddenTest){
+                      display = false;
+                      console.log(this.config.options.scales.yAxes)
+                      this.config.options.scales.yAxes[0].display = false
+                    }
                   }
+
                 };
               })
           },
