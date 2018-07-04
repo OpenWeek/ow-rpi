@@ -5,7 +5,7 @@ import rrdtool
 def init_measure(name, min, max):
     rrdtool.create(
         "../storage/"+name+".rrd",
-        "--start", "-2h",
+        "--start", "-1y",
         "--step", "300",
         "RRA:AVERAGE:0.5:1:12",
         "RRA:AVERAGE:0.5:12:24",
