@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import web
 import json
@@ -7,7 +8,6 @@ from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
         "/chart","update_quick_chart",
-        "/test", "test"
 )
 
 def render_template(template_name, **context):
@@ -19,24 +19,9 @@ def render_template(template_name, **context):
             extensions=extensions
     )
 
-
     jinja_env.globals.update(globals)
 
     return jinja_env.get_template(template_name).render(context)
-
-
-class hello:
-    def GET(self):
-        context = {
-                "value1" : "Python",
-                "value2" : "Jinja2"
-                }
-        return render_template("index_template.html", **context)
-
-class test:
-    def GET(self):
-        return "Hello world from python"
-
 
 class update_quick_chart:
     def GET(self):
@@ -64,7 +49,7 @@ class chart:
     def GET(self):
         # TODO: get base values from api
         context = {
-                "base_chart_data": json.dumps(
+                "chart_data": json.dumps(
                     {
                         "TEMPERATURE": [
                             {'x': 1530542612000, 'y':20},
@@ -81,7 +66,18 @@ class chart:
                             {'x': 1530542647000, 'y':995},
                             {'x': 1530542649000, 'y':1003}
                         ]
-                    })
+                    }),
+                "data_params": json.dumps(
+                    {
+                        "names": ["TEMPERATURE", "PRESSURE", "HUMIDITY"],
+                        "labels": ["Temperature", "Pressure", "Humidity"],
+                        "units": ["°C", "hPa", "%"],
+                        "colors": ["red", "green", "blue"],
+                        "positions": ["left", "right", "right"],
+                        "mins": [15, 990, 0.2],
+                        "maxs": [30, 1120, 0.7]
+                    }
+                )
                 }
         return render_template("chart.html", **context)
 
