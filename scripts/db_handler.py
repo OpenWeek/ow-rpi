@@ -12,6 +12,7 @@ def init_measure(name):
         "RRA:AVERAGE:0.5:12:24",
         "RRA:AVERAGE:0.5:288:7",
         "RRA:AVERAGE:0.5:2016:4",
+        "RRA:AVERAGE:0.5:8064:12",
         "DS:measure:GAUGE:3600:-5000:5000")
 
 def save_measure(measure, time, value):
@@ -20,26 +21,19 @@ def save_measure(measure, time, value):
 
 
 def get_measure_hour(measure):
+    return get_measure_from(measure, 3600)
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "-1hour")
-
-    start, end, step = result[0]
-    ds = result[1]
-    rows = result[2]
-
-    print("{} {} {}".format(start, end, step))
-    return rows
+def get_measure_day(measure):
+    return get_measure_from(measure, 24*3600)
 
 def get_measure_week(measure):
+    return get_measure_from(measure, 7*24*3600)
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", "now", "-e", "+1week")
+def get_measure_month(measure):
+    return get_measure_from(measure, 4*7*24*3600)
 
-    start, end, step = result[0]
-    ds = result[1]
-    rows = result[2]
-
-    print("{} {} {}".format(start, end, step))
-    return rows
+def get_measure_year(measure):
+    return get_measure_from(measure, 12*4*7*24*3600)
 
 def get_measure_from(measure, interval):
     """
