@@ -5,7 +5,7 @@ import rrdtool
 def init_measure(name):
     rrdtool.create(
         "../storage/"+name+".rrd",
-        "--start", "now",
+        "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
         "RRA:AVERAGE:0.5:1:12",
@@ -52,6 +52,13 @@ def get_measure_from(measure, interval):
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
+    ret = []
+    ts = start
+    for i in range(len(rows)):
+	ret.append({})
+	ret[i]['x'] = ts
+	ret[i]['y'] = rows[i][0]
+	ts += step
 
     print("{} {} {}".format(start, end, step))
-    return rows
+    return ret
