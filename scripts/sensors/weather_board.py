@@ -6,12 +6,6 @@ import os
 import threading
 import paho.mqtt.client as mqtt
 
-broker = "130.104.78.204"
-port = 1883
-keepAlive = 350
-
-timeStep = 300
-
 #default device
 device = "i2c-1"
 
@@ -32,7 +26,7 @@ class ReadAndSend(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-    def run(self):
+    def run(self, timeStep):
         while True:
 	    ts = int(time.time())
             p = bme280.read_pressure()
@@ -49,11 +43,22 @@ class ReadAndSend(threading.Thread):
 
             time.sleep(timeStep)
 
-client = mqtt.Client("owid2")
-client.on_connect = on_connect
-client.on_message = on_message
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
+    parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
+    parser.add_argument('--host', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of sending data in seconds (default is 300)')
+    args = parser.parse_args()
+    broker = args.host
+    port = args.port
+    timeStep = args.timeStep
+    keepAlive = timeStep*2
 
-client.connect(broker,port, keepAlive)
+    client = mqtt.Client("owid2")
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-loop = ReadAndSend()
-loop.run()
+    client.connect(broker,port, keepAlive)
+
+    loop = ReadAndSend()
+    loop.run(timeStep)

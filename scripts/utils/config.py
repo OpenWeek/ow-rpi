@@ -9,7 +9,7 @@ SMTP_PORT : port du serveur SMTP de l'adresse mail du MAIL_USER
 """
 MAIL_USER = 'ow-rpi@gmx.fr'
 MAIL_RECIPIENT ='archein.lol@gmail.com'
-MAIL_PASS = 'Password1'
+MAIL_PASS = ''
 SMTP_SERVER = 'mail.gmx.com'
 SMTP_PORT = 587
 

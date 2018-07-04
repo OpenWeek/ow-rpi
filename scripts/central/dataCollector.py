@@ -1,4 +1,4 @@
-from Adafruit_BME280 import *
+#from Adafruit_BME280 import *
 from db_handler import *
 import threading
 import time
@@ -6,12 +6,15 @@ import paho.mqtt.client as mqtt
 import signal
 import sys
 import config
+import argparse
+
+
 
 client = None
 
 def signal_handler(signal, frame):
-        sys.exit(0)
-        
+    sys.exit(0)
+      
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -24,18 +27,25 @@ def on_message(client, userdata, msg):
     payload = msg.payload.split(" - ")
     
     if msg.topic == "OWRPI/temp" : 
-		save_measure("temperature", payload[0], payload[1])
+        save_measure("temperature", payload[0], payload[1])
     elif msg.topic == "OWRPI/hum" : 
-		save_measure("humidity", payload[0], payload[1])
+        save_measure("humidity", payload[0], payload[1])
     elif msg.topic == "OWRPI/press" : 
-		save_measure("pressure", payload[0], payload[1])
+        save_measure("pressure", payload[0], payload[1])
     elif msg.topic == "OWRPI/IR" : 
-		save_measure("infrared", payload[0], payload[1])
+        save_measure("infrared", payload[0], payload[1])
     elif msg.topic == "OWRPI/UV" : 
-		save_measure("ultraviolet", payload[0], payload[1])
+        save_measure("ultraviolet", payload[0], payload[1])
     elif msg.topic == "OWRPI/visible" : 
-		save_measure("luminosity", payload[0], payload[1])
+        save_measure("luminosity", payload[0], payload[1])
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
+    parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
+    parser.add_argument('--host', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
+    args = parser.parse_args()
+    broker = args.host
+    port = args.port
 
 
             
