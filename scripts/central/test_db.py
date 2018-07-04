@@ -12,7 +12,10 @@ if __name__ == '__main__':
         db.save_measure("pressure", start+t*300, 1000+0.1*t)
 
 
+    print(db.get_measure_from("temperature", interval))
     print(db.get_measure_now("temperature"))
     print(db.get_measure_hour("temperature"))
     print(db.get_measure_day("temperature"))
     print(db.get_measure_week("temperature"))
+
+    print(db.get_measure_from("pressure", interval))

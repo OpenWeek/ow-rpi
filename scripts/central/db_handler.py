@@ -7,6 +7,7 @@ def init_measure(name, min, max):
         "../storage/"+name+".rrd",
         "--start", "-2h",
         "--step", "300",
+        "RRA:LAST:0.5:1:12",
         "RRA:AVERAGE:0.5:1:12",
         "RRA:AVERAGE:0.5:12:24",
         "RRA:AVERAGE:0.5:288:7",
