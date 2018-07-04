@@ -22,7 +22,7 @@
       <div class="col-lg-2"></div>
   </div>
   <script>
-
+      // Functions for the sliders
       $("#ex4").slider({
         ticks: [0, 1, 2, 3, 4],
         ticks_labels: ["Now", "Hours", "Days", "Weeks", "Months"],
@@ -74,7 +74,6 @@
   var quickUpdate = true; // true iff we are on "now" (=continuous update)
   var sliderPosition = 0; // contains the slider position
   var visibleAxes = new Array(dataLength); visibleAxes.fill(true); // which axes are visible or not
-  // TODO: change value of visibleAxes when variable is crossed out
 
   /**
     Function for the continuous update request
@@ -155,9 +154,23 @@
                 };
               })
           },
+          // legend: {
+          //   onClick: (e, legendItem) => {
+          //     console.log(e)
+          //     lind = dataParams.labels.indexOf(legendItem.text)
+          //     visibleAxes[lind] = false
+          //      Chart.defaults.global.legend.onClick(this, e, legendItem)
+          //   }
+          // }
       }
   };
-
+  // Small hack to EXTEND the legend.onClick
+  var original = Chart.defaults.global.legend.onClick;
+  Chart.defaults.global.legend.onClick = function(e, legendItem) {
+      lind = dataParams.labels.indexOf(legendItem.text);
+      visibleAxes[lind] = !visibleAxes[lind];
+      original.call(this, e, legendItem);
+  };
   window.onload = function () {
       var ctx       = document.getElementById("myChart").getContext("2d");
       window.myChart = new Chart(ctx, config);

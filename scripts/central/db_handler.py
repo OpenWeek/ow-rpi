@@ -2,7 +2,7 @@ import json
 import fcntl
 import rrdtool
 
-def init_measure(name):
+def init_measure(name, min, max):
     rrdtool.create(
         "../storage/"+name+".rrd",
         "--start", "-2h",
@@ -13,26 +13,26 @@ def init_measure(name):
         "RRA:AVERAGE:0.5:288:7",
         "RRA:AVERAGE:0.5:2016:4",
         "RRA:AVERAGE:0.5:8064:12",
-        "DS:measure:GAUGE:3600:-5000:5000")
+        "DS:measure:GAUGE:3600:"+str(min)+":"+str(max))
 
 def save_measure(measure, time, value):
 
     rrdtool.update("../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 
-def get_measure_hour(measure):
+def get_measure_now(measure):
     return get_measure_from(measure, 3600)
 
-def get_measure_day(measure):
+def get_measure_hour(measure):
     return get_measure_from(measure, 24*3600)
 
-def get_measure_week(measure):
+def get_measure_day(measure):
     return get_measure_from(measure, 7*24*3600)
 
-def get_measure_month(measure):
+def get_measure_week(measure):
     return get_measure_from(measure, 4*7*24*3600)
 
-def get_measure_year(measure):
+def get_measure_month(measure):
     return get_measure_from(measure, 12*4*7*24*3600)
 
 def get_measure_from(measure, interval):
@@ -49,10 +49,10 @@ def get_measure_from(measure, interval):
     ret = []
     ts = start
     for i in range(len(rows)):
-	ret.append({})
-	ret[i]['x'] = ts
-	ret[i]['y'] = rows[i][0]
-	ts += step
+	    ret.append({})
+	    ret[i]['x'] = ts
+	    ret[i]['y'] = rows[i][0]
+	    ts += step
 
-    print("{} {} {}".format(start, end, step))
+    #print("{} {} {}".format(start, end, step))
     return ret
