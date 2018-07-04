@@ -5,12 +5,8 @@ import time
 import paho.mqtt.client as mqtt
 import signal
 import sys
+import config
 
-
-broker = "130.104.78.204"
-port = 1883
-keepAlive = 60
-timeStep = 300
 client = None
 
 def signal_handler(signal, frame):
@@ -41,39 +37,14 @@ def on_message(client, userdata, msg):
 		save_measure("luminosity", payload[0], payload[1])
 
 
-'''class UpdateSensors(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        #self.sensor = BME280(p_mode=BME280_OSAMPLE_8, t_mode=BME280_OSAMPLE_2, h_mode=BME280_OSAMPLE_1, filter=BME280_FILTER_16)
-        self.tstart = time.time()
-        
-        client.connect(broker,port,keepAlive)
-        client.loop_start()
-        
-    def __del__(self):
-		client.loop_stop()
-		client.disconnect()
-        
-    def run(self):
-        while (True) :
-            degrees = self.sensor.read_temperature()
-            pascals = self.sensor.read_pressure()
-            hectopascals = pascals / 100
-            humidity = self.sensor.read_humidity()
-            timestamp = int(time.time())
-            print "time: " + str(timestamp) + " | temp: " + str(degrees) + \
-            "deg C | pressure: " + str(hectopascals) + "hPa | humidity: " + str(humidity) + "%"
-            save_measure("temperature", timestamp, degrees)
-            save_measure("pressure", timestamp, hectopascals)
-            save_measure("humidity", timestamp, humidity)
-            time.sleep(timeStep)'''
+
             
 signal.signal(signal.SIGINT, signal_handler)
 
 client = mqtt.Client("owid1")
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect(broker,port,keepAlive)
+client.connect(config.BROKER, config.BROKER_PORT, config.BROKER_KEEPALIVE)
 client.subscribe("OWRPI/temp")
 client.subscribe("OWRPI/hum")
 client.subscribe("OWRPI/IR")
@@ -81,6 +52,5 @@ client.subscribe("OWRPI/UV")
 client.subscribe("OWRPI/press")
 client.subscribe("OWRPI/visible")
 client.loop_forever()
-#test = UpdateSensors()
-#test.run()
+
 
