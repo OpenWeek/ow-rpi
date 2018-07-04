@@ -106,7 +106,7 @@ class chart:
                     }),
                 "data_params": json.dumps(
                     {
-                        "names": ["TEMPERATURE", "PRESSURE",] # "HUMIDITY"],
+                        "names": ["TEMPERATURE", "PRESSURE",], # "HUMIDITY"],
                         "labels": ["Temperature", "Pressure", "Humidity"],
                         "units": ["°C", "hPa", "%"],
                         "colors": ["red", "green", "blue"],
