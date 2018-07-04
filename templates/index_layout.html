@@ -35,6 +35,7 @@
           $.ajax({
               url: "update?format="+val.value.newValue,
               success: function(result){
+                console.log(result)
                 sliderPosition = val.value.newValue;
                 if (sliderPosition == 0) quickUpdate = true
                 else quickUpdate = false
