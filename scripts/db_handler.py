@@ -48,7 +48,7 @@ def get_measure_from(measure, start_time):
     all the data that are recorded in a
     """
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", start_time, "-e", "now")
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(start_time), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
