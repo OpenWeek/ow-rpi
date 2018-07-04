@@ -8,7 +8,6 @@ from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
         "/chart","update_quick_chart",
-        "/test", "test",
         "/update","update_chart"
 )
 
@@ -25,19 +24,6 @@ def render_template(template_name, **context):
     jinja_env.globals.update(globals)
 
     return jinja_env.get_template(template_name).render(context)
-
-
-class hello:
-    def GET(self):
-        context = {
-                "value1" : "Python",
-                "value2" : "Jinja2"
-                }
-        return render_template("index_template.html", **context)
-
-class test:
-    def GET(self):
-        return "Hello world from python"
 
 
 class update_quick_chart:
