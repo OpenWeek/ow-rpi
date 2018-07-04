@@ -41,13 +41,26 @@
                 hiddenTest = true;
 
                 dataParams.names.forEach(iname => {
-                    data[iname].length = 0;
-                    result[iname].forEach(t => {
-                      data[iname].push(t);
-                    })
+                    let oldLen = data[iname].length;
+                    let newLen = result[iname].length;
+                    let ind = 0;
 
+                    while(ind < oldLen && ind < newLen){
+                      data[iname][ind] = result[iname][ind];
+                      ind++;
+                    }
+
+                    while (ind < oldLen) {
+                      data[iname].pop();
+                      ind++;
+                    }
+                    while (ind < newLen) {
+                      data[iname].push(result[iname][ind]);
+                      ind++;
+                    }
+
+                    window.myLine.update();
                 })
-                window.myLine.update();
               }
           });
       });
