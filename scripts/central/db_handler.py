@@ -50,7 +50,7 @@ def get_measure_from(measure, interval):
     ts = start
     for i in range(len(rows)):
 	    ret.append({})
-	    ret[i]['x'] = ts
+	    ret[i]['x'] = ts*1000
 	    ret[i]['y'] = rows[i][0]
 	    ts += step
 
