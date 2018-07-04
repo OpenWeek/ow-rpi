@@ -20,11 +20,9 @@ def render_template(template_name, **context):
             extensions=extensions
     )
 
-
     jinja_env.globals.update(globals)
 
     return jinja_env.get_template(template_name).render(context)
-
 
 class update_quick_chart:
     def GET(self):
@@ -102,7 +100,7 @@ class chart:
                         "colors": ["red", "green", "blue"],
                         "positions": ["left", "right", "right"],
                         "mins": [15, 990, 0.2],
-                        "maxs": [30, 1120, 1]
+                        "maxs": [30, 1120, 0.7]
                     }
                 )
                 }
