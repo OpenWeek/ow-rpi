@@ -8,7 +8,6 @@ from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
         "/chart","update_quick_chart",
-        "/test", "test",
         "/update","update_chart"
 )
 

@@ -32,50 +32,55 @@
       });
 
       $("#ex4").on("change", function(val){
-        // TODO : smooth transition
-        console.log(window.myLine.scales['y0'])
-          //window.myLine.scales['y0'].hidden = true
           $.ajax({
               url: "update?format="+val.value.newValue,
               success: function(result){
-                hiddenTest = true;
-
+                sliderPosition = val.value.newValue;
+                if (sliderPosition == 0) quickUpdate = true
+                else quickUpdate = false
                 dataParams.names.forEach(iname => {
                     let oldLen = data[iname].length;
                     let newLen = result[iname].length;
                     let ind = 0;
-
-                    while(ind < oldLen && ind < newLen){
+                    // The while loops are necessary to see a smooth
+                    // animation. (if at one time the array is empty)
+                    // the lines will simply pop up.
+                    // This is not efficient but since the arrays are
+                    // small it shouldn't be a problem
+                    while(ind < oldLen && ind < newLen){ // replace where possible
                       data[iname][ind] = result[iname][ind];
                       ind++;
                     }
-
-                    while (ind < oldLen) {
+                    while (ind < oldLen) { // erase the supplementary datapoints
                       data[iname].pop();
                       ind++;
                     }
-                    while (ind < newLen) {
+                    while (ind < newLen) { // add the supplementary datapoints
                       data[iname].push(result[iname][ind]);
                       ind++;
                     }
-
-                    window.myLine.update();
                 })
+                window.myChart.update();
               }
           });
       });
-	{% block body %}{% endblock %}
+  // This is the data given by app.py
+  // It contains all parameters
+  var data = {{ chart_data }};
+  var dataParams = {{ data_params }};
   var dataLength = dataParams.names.length;
-  var dataInd = Array.from(Array(dataLength).keys());
-  var dateFormat = ["second"]
-  console.log(dataParams.names);
+  var dataInd = Array.from(Array(dataLength).keys()); // array to facilitate mapping
 
-  var timeFormat = true;
+  var quickUpdate = true; // true iff we are on "now" (=continuous update)
+  var sliderPosition = 0; // contains the slider position
+  var visibleAxes = new Array(dataLength); visibleAxes.fill(true); // which axes are visible or not
+  // TODO: change value of visibleAxes when variable is crossed out
 
-  var hiddenTest = false;
-
+  /**
+    Function for the continuous update request
+  */
   function getGraphUpdate(){
-      if (timeFormat){
+      if (quickUpdate){
         var lastData = data.TEMPERATURE;
         $.ajax({
             url: "chart?last="+lastData[lastData.length-1].x,
@@ -86,13 +91,13 @@
                       data[iname].push(jelem)
                     })
                 });
-                window.myLine.update();
+                window.myChart.update();
             }
         });
       }
   }
-  var timeFormat = 'DD/MM/YYYY';
 
+  // Config for the chart
   var config = {
       type:    'line',
       data:    {
@@ -143,15 +148,10 @@
                     display: true,
                     labelString: dataParams.units[i]
                   },
+                  // Will hide axis if the variable is crossed out
                   beforeUpdate: function(){
-                    console.log("gotten: "+hiddenTest)
-                    if(hiddenTest){
-                      display = false;
-                      console.log(this.config.options.scales.yAxes)
-                      this.config.options.scales.yAxes[0].display = false
-                    }
+                    this.config.options.scales.yAxes[i].display = visibleAxes[i]
                   }
-
                 };
               })
           },
@@ -160,7 +160,7 @@
 
   window.onload = function () {
       var ctx       = document.getElementById("myChart").getContext("2d");
-      window.myLine = new Chart(ctx, config);
+      window.myChart = new Chart(ctx, config);
   };
 
   setInterval(getGraphUpdate,300000);
