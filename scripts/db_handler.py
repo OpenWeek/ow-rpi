@@ -41,14 +41,13 @@ def get_measure_week(measure):
     print("{} {} {}".format(start, end, step))
     return rows
 
-def get_measure_from(measure, start_time):
+def get_measure_from(measure, interval):
     """
-    Get all entries of the desired measure (Temperature, Pression or Humidity) from Database (JSON)
-    whit key(-time-) > from:
-    all the data that are recorded in a
+    Get all entries of the desired measure (temperature, pression, humidity, ...) from Database (rrd)
+    recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(start_time), "-e", "now")
+    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]

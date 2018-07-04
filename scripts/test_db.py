@@ -12,5 +12,5 @@ if __name__ == '__main__':
         db.save_measure("pressure", start+t*300, 1000+0.1*t)
     """
 
-    print(db.get_measure_from("temperature", start))
-    print(db.get_measure_from("pressure", start))
+    print(db.get_measure_from("temperature", interval))
+    print(db.get_measure_from("pressure", interval))
