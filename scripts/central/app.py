@@ -3,7 +3,7 @@
 
 import web
 import json
-from db_handler import get_measure_all
+#from db_handler import get_measure_all
 from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
