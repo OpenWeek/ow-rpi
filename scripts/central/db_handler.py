@@ -41,7 +41,7 @@ def get_measure_from(measure, interval):
     recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
