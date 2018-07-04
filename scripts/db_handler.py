@@ -28,8 +28,7 @@ def get_measure_hour(measure):
     rows = result[2]
 
     print("{} {} {}".format(start, end, step))
-    print(ds)
-    print(rows)
+    return rows
 
 def get_measure_week(measure):
 

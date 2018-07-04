@@ -3,14 +3,15 @@ import time
 
 if __name__ == '__main__':
 
-    T = time.time()
+    interval = 24*3600
+    start = time.time() - interval
 
-    for t in range(24*3600/5):
-        db.save_measure("temperature", T-t*300, 10+0.01*t)
-        db.save_measure("pressure", T-t*300, 1000+0.1*t)
+    for t in range(interval/300):
+        db.save_measure("temperature", start+t*300, 10+0.01*t)
+        db.save_measure("pressure", start+t*300, 1000+0.1*t)
 
-    print(db.get_measure_from("temperature", T-24*3600))
-    print(db.get_measure_from("pressure", T-24*3600))
+    print(db.get_measure_from("temperature", start))
+    print(db.get_measure_from("pressure", start))
 
 
     """
