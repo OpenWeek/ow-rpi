@@ -4,7 +4,7 @@ import rrdtool
 
 def init_measure(name, min, max):
     rrdtool.create(
-        "../storage/"+name+".rrd",
+        "../../storage/"+name+".rrd",
         "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
@@ -17,7 +17,7 @@ def init_measure(name, min, max):
 
 def save_measure(measure, time, value):
 
-    rrdtool.update("../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update("../../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 
 def get_measure_now(measure):
@@ -41,7 +41,7 @@ def get_measure_from(measure, interval):
     recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("../../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
