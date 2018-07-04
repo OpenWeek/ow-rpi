@@ -85,6 +85,7 @@
         $.ajax({
             url: "chart?last="+lastData[lastData.length-1].x,
             success: function(result){
+              console.log(result)
                 var nd = result;
                 dataParams.names.forEach( iname => {
                     nd[iname].forEach( jelem => {
