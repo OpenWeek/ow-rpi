@@ -25,12 +25,13 @@ import sys
 directory = "../storage"
 path = directory+"/"
 
-def init_measure(name, min, max):
+def init_measure(pi_id, measure, min, max):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     rrdtool.create(
-        path+name+".rrd",
+       # "ow_rpi/storage/"+name+".rrd",
+        path+"pi"+str(pi_id)+"_"+measure+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -41,12 +42,15 @@ def init_measure(name, min, max):
         "RRA:AVERAGE:0.5:80640:12",
         "DS:measure:GAUGE:3600:"+str(min)+":"+str(max))
 
+
 """
 def save_measure(measure, time, value):
 
     rrdtool.update("../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 """
 def save_measure(pi_id, measure, time, value):
+
+    #rrdtool.update("ow_rpi/storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
     rrdtool.update(path+"pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
@@ -121,6 +125,8 @@ def get_measure_from(measure, interval):
     return ret
 """
 def get_measure_from(pi_id, measure, interval):
+
+    #result = rrdtool.fetch("ow_rpi/storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     result = rrdtool.fetch(path+"pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
