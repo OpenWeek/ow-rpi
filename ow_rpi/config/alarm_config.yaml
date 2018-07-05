@@ -1,5 +1,5 @@
 ---
-humidite:
+humidity:
   MINMIN : 30
   MIN : 40
   MAX : 60
@@ -30,7 +30,6 @@ infrared:
   MAX : 800
   MAXMAX : 900
 list_email:
-  - franco.maxime@gmail.com
-  - nicolas.rybowski@student.uclouvain.be  
+  - archein.lol@gmail.com 
 database:
   name : alarm_database

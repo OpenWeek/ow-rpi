@@ -21,9 +21,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
+import yaml
 
 def get_config():
-  with open("../config/send_email.yaml", 'r') as stream:
+  with open("ow_rpi/config/send_email.yaml", 'r') as stream:
     try:
       data = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
@@ -79,4 +80,4 @@ def send_mail(subject, text):
     traceback.print_exc()
     return False
 
-send_mail("subject", "text message")
+
