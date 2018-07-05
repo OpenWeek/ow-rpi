@@ -97,12 +97,14 @@
                 var nd = result;
                 dataParams.names.forEach( iname => {
                     fixedLen = data[iname].length
-                    addedLen = nd[iname].length
-
-                    data[iname].reverse()
-                    for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
-                    data[iname].reverse()
-                    for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
+                    // addedLen = nd[iname].length
+                    for(let ii=0; ii<fixedLen; ++ii){
+                      data[iname][ii] = nd[iname][ii]
+                    }
+                    // data[iname].reverse()
+                    // for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
+                    // data[iname].reverse()
+                    // for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
                 });
                 window.myChart.update();
             }
