@@ -31,9 +31,9 @@ if __name__ == '__main__':
     list_pi = range(4)
 
     for i in list_pi:
-        db.init_measure('pi'+str(i)+"_"+'temperature', -273.15, 200)
-        db.init_measure('pi'+str(i)+"_"+'pressure', 800, 1300)
-        db.init_measure('pi'+str(i)+"_"+'luminosity', 0, 150000)
-        db.init_measure('pi'+str(i)+"_"+'humidity', 0, 5000)
-        db.init_measure('pi'+str(i)+"_"+'ultraviolet', 0, 5000)
-        db.init_measure('pi'+str(i)+"_"+'infrared', 0, 5000)
+        db.init_measure(i, 'temperature', -273.15, 200)
+        db.init_measure(i, 'pressure', 800, 1300)
+        db.init_measure(i, 'luminosity', 0, 150000)
+        db.init_measure(i, 'humidity', 0, 5000)
+        db.init_measure(i, 'ultraviolet', 0, 5000)
+        db.init_measure(i, 'infrared', 0, 5000)
