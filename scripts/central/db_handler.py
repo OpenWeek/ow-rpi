@@ -8,7 +8,6 @@ def init_measure(name, min, max):
         "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
-        "RRA:AVERAGE:0.5:1:12",
         "RRA:AVERAGE:0.5:12:24",
         "RRA:AVERAGE:0.5:288:7",
         "RRA:AVERAGE:0.5:2016:4",
@@ -47,7 +46,7 @@ def get_measure_from(measure, interval):
     ds = result[1]
     rows = result[2]
     ret = []
-    ts = start
+    ts = start + 300
     for i in range(len(rows)):
 	    ret.append({})
 	    ret[i]['x'] = ts*1000
