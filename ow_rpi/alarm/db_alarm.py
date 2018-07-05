@@ -2,6 +2,7 @@ import 	sqlite3
 import time
 import yaml
 from ow_rpi.utils.send_email import *
+from ow_rpi.utils.date import *
 
 def get_config():
 	with open("ow_rpi/config/alarm_config.yaml", 'r') as stream:
@@ -80,15 +81,27 @@ def get_now():
 def generate_alarm(station, measure, timestamp, value):
 	config = get_config()
 	alarm = True
-	subject = "ALARM FROM STATION :" + str(station) + ""
+	gravity = 0
+	subject = "ALARM FROM STATION :" + str(station) + " GRAVITY : "
 	if float(value) <= float(config[measure]['MINMIN']):
-		
+		subject += "2 !!!"
+		gravity = "2 !!!"
 		save_log(timestamp, measure, value, station, 2)
 	elif float(value) <= float(config[measure]['MIN']):
+		subject += "1"
+		gravity = "1"
 		save_log(timestamp, measure, value, station, 1)
 	elif float(value) >= float(config[measure]['MAXMAX']):
+		subject += "2 !!!"
+		gravity = "2 !!!"
 		save_log(timestamp, measure, value, station, 2)
 	elif float(value) >= float(config[measure]['MAX']):
+		subject += "1"
+		gravity = "1"
 		save_log(timestamp, measure, value, station, 1)
 	else:
 		alarm = False
+	text = "ALARM FROM : \n\tSTATION : "+ str(station) + "\n\tMEASURE : "+ str(measure)+ "\n\tVALUE : "+ str(value) + "\n\tGRAVITY : "+ str(gravity) + "\n\tDATE : "+ str(timestamp_to_date(int(timestamp)))
+	
+	if alarm:
+		send_mail(subject,text)
