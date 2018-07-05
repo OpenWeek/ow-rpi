@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Openweek Raspberry pi's weather station
 # Copyright c 2018  Maxime Postaire, Lucas Ody, Maxime Franco,
 # Nicolas Rybowski, Benjamin De Cnuydt, Quentin Delmelle, Colin Evrard,
@@ -15,9 +18,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import web
 import json
