@@ -29,10 +29,11 @@ the central folder is used on the machine which centralizes data, has the databa
 lighttpd -D -f lighttpd.conf
 ```
 ## Build with
-   * rddtools
-   *  odroid librairies for the weather station
+   * [rrdtools](https://oss.oetiker.ch/rrdtool/)
+   * odroid librairies for the [weather station]((https://wiki.odroid.com/accessory/sensor/weather-board/weather-board)
+   * Eclipse [paho mqtt](https://www.eclipse.org/paho/) librairy for python
 
 ## License
 This projet is under the GNU GPL v3 license, see the LICENSE file for details
-%## Authors
-%Maxime Postaire, Lucas Ody, Maxime Franco, Nicolas Rybowski, Benjamin De Cnuydt,
+## Authors
+Benjamin De Cnuydt, Maxime Franco, Lucas Ody, Maxime Postaire, Nicolas Rybowski
