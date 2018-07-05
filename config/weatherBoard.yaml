@@ -1,0 +1,9 @@
+# Configuration des variables pour le client MQTT
+
+# BROKER : Adresse IP du serveur BROKER MQTT.
+# BROKER_PORT : Port du serveur BROKER MQTT.
+# TIMESTEP : Fréquence d'envoi des données.
+
+BROKER: "130.104.78.204"
+BROKER_PORT: 1883
+TIMESTEP: 300

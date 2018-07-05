@@ -23,9 +23,8 @@ import time
 import paho.mqtt.client as mqtt
 import signal
 import sys
-import config
 import argparse
-
+import yaml
 
 
 client = None
@@ -60,10 +59,26 @@ def on_message(client, userdata, msg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
     parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
-    parser.add_argument('--host', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--host', '-H', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--keepalive', '-k', action='store', default=300, type=int, help='time while the connection is maintained when no data is transmitted in seconds (default is 300)')
+
+    try:
+        with open("../../config/dataCollector.yaml", 'r') as stream:
+            try:
+                data = yaml.safe_load(stream)
+                broker = data['BROKER']
+                port = data['BROKER_PORT']
+                keepalive = data['BROKER_KEEPALIVE']
+            except yaml.YAMLError as exc:
+                print(exc)
+    except IOError as exc:
+        print(exc)
+
     args = parser.parse_args()
     broker = args.host
     port = args.port
+    keepalive = args.keepalive
+    
 
 
             
@@ -72,7 +87,7 @@ signal.signal(signal.SIGINT, signal_handler)
 client = mqtt.Client("owid1")
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect(config.BROKER, config.BROKER_PORT, config.BROKER_KEEPALIVE)
+client.connect(broker, port, keepalive)
 client.subscribe("OWRPI/temp")
 client.subscribe("OWRPI/hum")
 client.subscribe("OWRPI/IR")
