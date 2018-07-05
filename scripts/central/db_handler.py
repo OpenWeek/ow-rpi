@@ -64,11 +64,7 @@ def get_measure_from(measure, interval):
     ds = result[1]
     rows = result[2]
     ret = []
-<<<<<<< Updated upstream
-    ts = start
-=======
     ts = start + 30
->>>>>>> Stashed changes
     for i in range(len(rows)):
 	    ret.append({})
 	    ret[i]['x'] = ts*1000
