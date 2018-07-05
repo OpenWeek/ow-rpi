@@ -89,15 +89,18 @@
               break;
             }
         }
+        console.log(lasti)
         $.ajax({
             url: "chart?last="+lastTime,
             success: function(result){
               console.log(result)
                 var nd = result;
                 dataParams.names.forEach( iname => {
-                    let j = 0;
-                    for(let i=nd[iname].length; i<data[iname].length; i++){
-                      data[iname][j] = (i<=lasti)? data[iname][i]: nd[iname][i-lasti-1]
+                    fixedLen = data[iname].length
+                    addedLen = nd[iname].length
+                    for(let j=0; j<fixedLen; j++){
+                      let ij = j+addedLen;
+                      data[iname][j] = (ij<=lasti)? data[iname][ij]: nd[iname][j-lasti];
                     }
                     // nd[iname].forEach( jelem => {
                     //   data[iname].push(jelem)
