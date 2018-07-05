@@ -30,7 +30,7 @@ lighttpd -D -f lighttpd.conf
 ```
 ## Build with
    * [rrdtools](https://oss.oetiker.ch/rrdtool/)
-   * odroid librairies for the [weather station]((https://wiki.odroid.com/accessory/sensor/weather-board/weather-board)
+   * odroid librairies for the [weather station](https://wiki.odroid.com/accessory/sensor/weather-board/weather-board)
    * Eclipse [paho mqtt](https://www.eclipse.org/paho/) librairy for python
 
 ## License
