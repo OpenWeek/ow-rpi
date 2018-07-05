@@ -87,17 +87,21 @@ if __name__ == '__main__':
     parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of data sending in seconds (default is 300)')    
     
     try:
-        with open("../../config/weatherBoard.yaml", 'r') as stream:
+        with open("../config/weatherBoard.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
-                broker = data['BROKER']
-                port = data['BROKER_PORT']
-                timeStep = data['TIMESTEP']
             except yaml.YAMLError as exc:
                 print(exc)
     except IOError as exc:
         print(exc)
     
+    if 'BROKER' in data:
+        broker = data['BROKER']
+    if 'BROKER_PORT' in data:
+        port = data['BROKER_PORT']
+    if 'TIMESTEP' in data:
+        timeStep = data['TIMESTEP']
+
     args = parser.parse_args()
     broker = args.host
     port = args.port
