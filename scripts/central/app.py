@@ -27,14 +27,11 @@ def render_template(template_name, **context):
 class update_quick_chart:
     def GET(self):
         web.header('Content-Type', 'application/json')
-        last_time = web.input().last
-        print last_time
+        last_time = int(web.input().last)
 
         def my_filter(arr):
-            print arr
-            arr2 =  [x for x in arr if x['x'] > last_time]
-            print arr2
-            return arr2
+            return  [x for x in arr if x['x'] > last_time]
+
         measures =  {
             "TEMPERATURE": my_filter(get_measure_now("temperature")),
             # "HUMIDITY": [
@@ -43,7 +40,6 @@ class update_quick_chart:
             # ],
             "PRESSURE":  my_filter(get_measure_now("pressure"))
         }# get_measure_all("TEMPERATURE")
-        # TODO: get right values
         return json.dumps(measures)
 
 class update_chart:
@@ -74,12 +70,10 @@ class update_chart:
             #     {'x': 1530542760000, 'y':995}
             # ]
         }# get_measure_all("TEMPERATURE")
-        # TODO: get right values
         return json.dumps(measures)
 
 class chart:
     def GET(self):
-        # TODO: get base values from api
         context = {
                 "chart_data": json.dumps(
                     {

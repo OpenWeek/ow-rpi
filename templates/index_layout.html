@@ -81,17 +81,30 @@
   */
   function getGraphUpdate(){
       if (quickUpdate){
-        var lastData = data.TEMPERATURE;
-        console.log(lastData[lastData.length-1].x)
+        var lastData = data[dataParams.names[0]];
+        var lastTime = 0;
+        for (var lasti=lastData.length-1; lasti >= 0; lasti--) {
+            if (lastData[lasti].y){
+              lastTime = lastData[lasti].x;
+              break;
+            }
+        }
+        console.log(lasti)
         $.ajax({
-            url: "chart?last="+lastData[lastData.length-1].x,
+            url: "chart?last="+lastTime,
             success: function(result){
               console.log(result)
                 var nd = result;
                 dataParams.names.forEach( iname => {
-                    nd[iname].forEach( jelem => {
-                      data[iname].push(jelem)
-                    })
+                    fixedLen = data[iname].length
+                    addedLen = nd[iname].length
+                    for(let j=0; j<fixedLen; j++){
+                      let ij = j+addedLen;
+                      data[iname][j] = (ij<=lasti)? data[iname][ij]: nd[iname][j-lasti];
+                    }
+                    // nd[iname].forEach( jelem => {
+                    //   data[iname].push(jelem)
+                    // })
                 });
                 window.myChart.update();
             }
