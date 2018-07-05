@@ -36,12 +36,12 @@ class update_quick_chart:
             print arr2
             return arr2
         measures =  {
-            "TEMPERATURE": filter(get_measure_now("temperature")),
+            "TEMPERATURE": my_filter(get_measure_now("temperature")),
             # "HUMIDITY": [
             #     {'x': 1530542690000, 'y':0.2},
             #     {'x': 1530542760000, 'y':0.4}
             # ],
-            "PRESSURE":  filter(get_measure_now("pressure"))
+            "PRESSURE":  my_filter(get_measure_now("pressure"))
         }# get_measure_all("TEMPERATURE")
         # TODO: get right values
         return json.dumps(measures)
