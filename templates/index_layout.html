@@ -102,15 +102,10 @@
                     //   let ij = j+addedLen;
                     //   data[iname][j] = (ij<=lasti)? data[iname][ij]: nd[iname][j-lasti];
                     // }
-
-                    for(let j=0; j<fixedLen-addedLen; j++){
-                      data[iname][j] = data[iname][j+addedLen];
-                    }
-                    var jj = 0
-                    for(let j=fixedLen-addedLen; j<fixedLen; ++j){
-                      data[iname][j] = nd[iname][jj];
-                      jj++;
-                    }
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen; ii++) data[iname].pop()
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
                     // nd[iname].forEach( jelem => {
                     //   data[iname].push(jelem)
                     // })
