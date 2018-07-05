@@ -1,10 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <title>Test page</title>
+    <meta charset="UTF-8">
+    <title>Test page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-slider.min.js"></script>
 </head>
 <body>
-	{% block body %}{% endblock %}
+  <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-8">
+        <canvas id="myChart" width="200" height="100"></canvas>
+        <input data-slider-value="0" id="ex4" type="text"/>
+      </div>
+      <div class="col-lg-2"></div>
+  </div>
+  <script>
+      // Functions for the sliders
+      $("#ex4").slider({
+        ticks: [0, 1, 2, 3, 4],
+        ticks_labels: ["Now", "Hours", "Days", "Weeks", "Months"],
+        value: 0,
+        step:1
+
+      });
+
+      $("#ex4").on("change", function(val){
+          $.ajax({
+              url: "update?format="+val.value.newValue,
+              success: function(result){
+                console.log(result)
+                sliderPosition = val.value.newValue;
+                if (sliderPosition == 0) quickUpdate = true
+                else quickUpdate = false
+                dataParams.names.forEach(iname => {
+                    let oldLen = data[iname].length;
+                    let newLen = result[iname].length;
+                    let ind = 0;
+                    // The while loops are necessary to see a smooth
+                    // animation. (if at one time the array is empty)
+                    // the lines will simply pop up.
+                    // This is not efficient but since the arrays are
+                    // small it shouldn't be a problem
+                    while(ind < oldLen && ind < newLen){ // replace where possible
+                      data[iname][ind] = result[iname][ind];
+                      ind++;
+                    }
+                    while (ind < oldLen) { // erase the supplementary datapoints
+                      data[iname].pop();
+                      ind++;
+                    }
+                    while (ind < newLen) { // add the supplementary datapoints
+                      data[iname].push(result[iname][ind]);
+                      ind++;
+                    }
+                })
+                window.myChart.update();
+              }
+          });
+      });
+  // This is the data given by app.py
+  // It contains all parameters
+  var data = {{ chart_data }};
+  var dataParams = {{ data_params }};
+  var dataLength = dataParams.names.length;
+  var dataInd = Array.from(Array(dataLength).keys()); // array to facilitate mapping
+
+  var quickUpdate = true; // true iff we are on "now" (=continuous update)
+  var sliderPosition = 0; // contains the slider position
+  var visibleAxes = new Array(dataLength); visibleAxes.fill(true); // which axes are visible or not
+
+  /**
+    Function for the continuous update request
+  */
+  function getGraphUpdate(){
+      if (quickUpdate){
+        var lastData = data[dataParams.names[0]];
+        var lastTime = 0;
+        for (var lasti=lastData.length-1; lasti >= 0; lasti--) {
+            if (lastData[lasti].y){
+              lastTime = lastData[lasti].x;
+              break;
+            }
+        }
+        console.log(lasti)
+        $.ajax({
+            url: "chart?last="+lastTime,
+            success: function(result){
+              console.log(result)
+                var nd = result;
+                dataParams.names.forEach( iname => {
+                    fixedLen = data[iname].length
+                    addedLen = nd[iname].length
+
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
+                });
+                window.myChart.update();
+            }
+        });
+      }
+  }
+
+  // Config for the chart
+  var config = {
+      type:    'line',
+      data:    {
+          datasets: dataInd.map(function(i) {
+            return {
+              label: dataParams.labels[i],
+              data: data[dataParams.names[i]],
+              borderColor: dataParams.colors[i],
+              yAxisID: "y"+i,
+              fill: false
+            };
+          })
+      },
+      options: {
+          responsive: true,
+          title:      {
+              display: true,
+              text:    "Weather station"
+          },
+          scales:     {
+              xAxes: [{
+                  id: 'x0',
+                  type: "time",
+                  scaleLabel: {
+                      display:     true,
+                      labelString: 'Date'
+                  },
+                  time: {
+                    unitStepSize: 10,
+                    displayFormats: {
+                      'second' : 'HH:mm:ss',
+                      'minute': 'HH:mm',
+                      'hour': 'DD MMM HH:mm',
+                       'day': 'DD MMM'
+                    }
+                  }
+              }],
+              yAxes: dataInd.map(function(i) {
+                return {
+                  id: "y"+i,
+                  position: dataParams.positions[i],
+                  ticks: {
+                    suggestedMin: dataParams.mins[i],
+                    suggestedMax: dataParams.maxs[i],
+                    fontColor: dataParams.colors[i]
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: dataParams.units[i]
+                  },
+                  // Will hide axis if the variable is crossed out
+                  beforeUpdate: function(){
+                    this.config.options.scales.yAxes[i].display = visibleAxes[i]
+                  }
+                };
+              })
+          },
+          // legend: {
+          //   onClick: (e, legendItem) => {
+          //     console.log(e)
+          //     lind = dataParams.labels.indexOf(legendItem.text)
+          //     visibleAxes[lind] = false
+          //      Chart.defaults.global.legend.onClick(this, e, legendItem)
+          //   }
+          // }
+      }
+  };
+  // Small hack to EXTEND the legend.onClick
+  var original = Chart.defaults.global.legend.onClick;
+  Chart.defaults.global.legend.onClick = function(e, legendItem) {
+      lind = dataParams.labels.indexOf(legendItem.text);
+      visibleAxes[lind] = !visibleAxes[lind];
+      original.call(this, e, legendItem);
+  };
+  window.onload = function () {
+      var ctx       = document.getElementById("myChart").getContext("2d");
+      window.myChart = new Chart(ctx, config);
+  };
+
+  setInterval(getGraphUpdate,30000);
+
+</script>
+
 </body>
 </html>

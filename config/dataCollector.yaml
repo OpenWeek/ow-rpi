@@ -1,0 +1,9 @@
+# Configuration des variables pour le serveur BROKER MQTT
+
+# BROKER : adresse IP du serveur BROKER MQTT
+# BROKER_PORT : Port du serveur BROKER MQTT
+# BROKER_KEEPALIVE : Temps durant laquelle la connexion est maintenue sans transmission de données.
+
+BROKER: "130.104.78.204"
+BROKER_PORT: 1883
+BROKER_KEEPALIVE: 300
