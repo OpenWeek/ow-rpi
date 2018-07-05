@@ -23,7 +23,6 @@ import time
 import paho.mqtt.client as mqtt
 import signal
 import sys
-import config
 import argparse
 import yaml
 
@@ -72,7 +71,7 @@ if __name__ == '__main__':
                 keepalive = data['BROKER_KEEPALIVE']
             except yaml.YAMLError as exc:
                 print(exc)
-    except FileNotFoundError as exc:
+    except IOError as exc:
         print(exc)
 
     args = parser.parse_args()
