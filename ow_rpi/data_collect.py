@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from db_handler import *
+from ow_rpi.db_handler.db_handler import *
 import threading
 import time
 import paho.mqtt.client as mqtt
@@ -25,11 +25,10 @@ import sys
 import argparse
 import yaml
 
-
+data = {}
 client = None
 channel = "OWRPI/"
 measures = ["temperature", "humidity", "pressure", "infrared", "ultraviolet", "luminosity"]
-piIds = []
 
 def signal_handler(signal, frame):
     sys.exit(0)
@@ -44,10 +43,9 @@ def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
     
     payload = msg.payload.split(" - ")
-    
     for m in measures :
 		if msg.topic == channel + m :
-			save_measure(m,payload[0],payload[1])
+			save_measure(payload[0], m,payload[1],payload[2])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
@@ -56,7 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--keepalive', '-k', action='store', default=300, type=int, help='time while the connection is maintained when no data is transmitted in seconds (default is 300)')
 
     try:
-        with open("ow_rpi/config/dataCollector.yaml", 'r') as stream:
+        with open("ow_rpi/config/data_collect.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -68,7 +66,7 @@ if __name__ == '__main__':
         broker = data['BROKER']
     if 'BROKER_PORT' in data:
         port = data['BROKER_PORT']
-    if 'BROKER_KEEPALIVE'
+    if 'BROKER_KEEPALIVE' in data:
         keepalive = data['BROKER_KEEPALIVE']
 
     args = parser.parse_args()
