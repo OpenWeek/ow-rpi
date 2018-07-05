@@ -22,10 +22,15 @@ import fcntl
 import rrdtool
 import sys
 
+directory = "../storage"
+path = directory+"/"
 
 def init_measure(name, min, max):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     rrdtool.create(
-        "../storage/"+name+".rrd",
+        path+name+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -43,7 +48,7 @@ def save_measure(measure, time, value):
 """
 def save_measure(pi_id, measure, time, value):
 
-    rrdtool.update("../storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update(path+"pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 """
 def get_measure_now(measure):
@@ -86,6 +91,11 @@ def get_measure_week(pi_id, measure):
 
 def get_measure_month(pi_id, measure):
     return get_measure_from(pi_id, measure, 12*4*7*24*3600)
+def delete_measure(measure):
+    try:
+        os.remove(path+measure+".rrd")
+    except OSError:
+        pass
 
 """
 Get all entries of the desired measure (temperature, pression, humidity, ...) from Database (rrd)
@@ -112,7 +122,7 @@ def get_measure_from(measure, interval):
 """
 def get_measure_from(pi_id, measure, interval):
 
-    result = rrdtool.fetch("../storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch(path+"pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
