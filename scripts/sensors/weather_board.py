@@ -5,6 +5,7 @@ import time
 import os
 import threading
 import paho.mqtt.client as mqtt
+import yaml
 
 #default device
 device = "i2c-1"
@@ -46,19 +47,31 @@ class ReadAndSend(threading.Thread):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
     parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
-    parser.add_argument('--host', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
-    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of sending data in seconds (default is 300)')
+    parser.add_argument('--host', '-H', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of data sending in seconds (default is 300)')    
+    
+    try:
+        with open("../../config/weatherBoard.yaml", 'r') as stream:
+            try:
+                data = yaml.safe_load(stream)
+                broker = data['BROKER']
+                port = data['BROKER_PORT']
+                timeStep = data['TIMESTEP']
+            except yaml.YAMLError as exc:
+                print(exc)
+    except IOError as exc:
+        print(exc)
+    
     args = parser.parse_args()
     broker = args.host
     port = args.port
     timeStep = args.timeStep
-    keepAlive = timeStep*2
 
     client = mqtt.Client("owid2")
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.connect(broker,port, keepAlive)
+    client.connect(broker,port, timeStep*2)
 
     loop = ReadAndSend()
     loop.run(timeStep)
