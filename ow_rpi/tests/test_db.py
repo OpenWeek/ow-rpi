@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import db_handler as db
+from ow_rpi.db_handler.db_handler import *
 import time
 import unittest
 import os
@@ -34,22 +34,21 @@ class TestStringMethods(unittest.TestCase):
         pressure_base = 1000
         pressure_mul = 0.1
 
-        db.init_measure(self.name1, temp_base, 1+temp_base+temp_mul*(self.interval/300))
-        db.init_measure(self.name2, pressure_base, 1+pressure_base+pressure_mul*(self.interval/300))
+        init_measure(self.name1, temp_base, 1+temp_base+temp_mul*(self.interval/300))
+        init_measure(self.name2, pressure_base, 1+pressure_base+pressure_mul*(self.interval/300))
 
         for t in range(self.interval/300):
-            db.save_measure(self.name1, start+t*300, temp_base+temp_mul*t)
-            db.save_measure(self.name2, start+t*300, pressure_base+pressure_mul*t)
+            save_measure(0, self.name1, start+t*300, temp_base+temp_mul*t)
 
     def test_save_measure(self):
-        self.assertTrue(os.path.exists("../../storage"))
-        self.assertTrue(os.path.isfile("../../storage/"+self.name1+self.suffix))
-        self.assertTrue(os.path.isfile("../../storage/"+self.name2+self.suffix))
+        self.assertTrue(os.path.exists("../storage"))
+        self.assertTrue(os.path.isfile("../storage/"+self.name1+self.suffix))
+        self.assertTrue(os.path.isfile("../storage/"+self.name2+self.suffix))
     #should find only one None at the end of the list because there is no measure registered yet
     #
     def test_no_None(self):
         none_count = 0
-        for elem in db.get_measure_from(self.name1, self.interval):
+        for elem in get_measure_from(0, self.name1, self.interval):
             if elem["y"] is None:
                 none_count+=1
         
