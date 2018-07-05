@@ -1,0 +1,36 @@
+---
+humidite:
+  MINMIN : 30
+  MIN : 40
+  MAX : 60
+  MAXMAX : 68
+temperature:
+  MINMIN : 15
+  MIN : 17
+  MAX : 20
+  MAXMAX : 22
+pressure:
+  MINMIN : 975
+  MIN : 990
+  MAX : 1025
+  MAXMAX : 1050
+luminosity:
+  MINMIN : 0 
+  MIN : 0
+  MAX : 800
+  MAXMAX : 900
+ultraviolet:
+  MINMIN : 0 
+  MIN : 0
+  MAX : 800
+  MAXMAX : 900
+infrared:
+  MINMIN : 0 
+  MIN : 0
+  MAX : 800
+  MAXMAX : 900
+list_email:
+  - franco.maxime@gmail.com
+  - nicolas.rybowski@student.uclouvain.be  
+database:
+  name : alarm_database
