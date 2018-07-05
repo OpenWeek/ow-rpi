@@ -28,6 +28,8 @@ import yaml
 
 
 client = None
+channel = "OWRPI/"
+measures = ["temperature", "humidity", "pressure", "infrared", "ultraviolet", "luminosity"]
 
 def signal_handler(signal, frame):
     sys.exit(0)
@@ -43,18 +45,9 @@ def on_message(client, userdata, msg):
     
     payload = msg.payload.split(" - ")
     
-    if msg.topic == "OWRPI/temp" : 
-        save_measure("temperature", payload[0], payload[1])
-    elif msg.topic == "OWRPI/hum" : 
-        save_measure("humidity", payload[0], payload[1])
-    elif msg.topic == "OWRPI/press" : 
-        save_measure("pressure", payload[0], payload[1])
-    elif msg.topic == "OWRPI/IR" : 
-        save_measure("infrared", payload[0], payload[1])
-    elif msg.topic == "OWRPI/UV" : 
-        save_measure("ultraviolet", payload[0], payload[1])
-    elif msg.topic == "OWRPI/visible" : 
-        save_measure("luminosity", payload[0], payload[1])
+    for m in measures :
+		if msg.topic == channel + m :
+			save_measure(m,payload[0],payload[1])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
