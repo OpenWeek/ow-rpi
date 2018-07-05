@@ -102,8 +102,9 @@
                     //   let ij = j+addedLen;
                     //   data[iname][j] = (ij<=lasti)? data[iname][ij]: nd[iname][j-lasti];
                     // }
+                    console.log(addedLen)
                     data[iname].reverse()
-                    for(let ii=0; ii<addedLen; ii++) data[iname].pop()
+                    for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
                     data[iname].reverse()
                     for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
                     // nd[iname].forEach( jelem => {
