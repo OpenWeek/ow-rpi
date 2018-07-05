@@ -35,6 +35,7 @@
           $.ajax({
               url: "update?format="+val.value.newValue,
               success: function(result){
+                console.log(result)
                 sliderPosition = val.value.newValue;
                 if (sliderPosition == 0) quickUpdate = true
                 else quickUpdate = false
@@ -80,15 +81,28 @@
   */
   function getGraphUpdate(){
       if (quickUpdate){
-        var lastData = data.TEMPERATURE;
+        var lastData = data[dataParams.names[0]];
+        var lastTime = 0;
+        for (var lasti=lastData.length-1; lasti >= 0; lasti--) {
+            if (lastData[lasti].y){
+              lastTime = lastData[lasti].x;
+              break;
+            }
+        }
+        console.log(lasti)
         $.ajax({
-            url: "chart?last="+lastData[lastData.length-1].x,
+            url: "chart?last="+lastTime,
             success: function(result){
+              console.log(result)
                 var nd = result;
                 dataParams.names.forEach( iname => {
-                    nd[iname].forEach( jelem => {
-                      data[iname].push(jelem)
-                    })
+                    fixedLen = data[iname].length
+                    addedLen = nd[iname].length
+
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
+                    data[iname].reverse()
+                    for(let ii=0; ii<addedLen; ii++) data[iname].push(nd[iname][ii])
                 });
                 window.myChart.update();
             }
@@ -176,7 +190,7 @@
       window.myChart = new Chart(ctx, config);
   };
 
-  setInterval(getGraphUpdate,300000);
+  setInterval(getGraphUpdate,30000);
 
 </script>
 
