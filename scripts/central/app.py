@@ -30,8 +30,11 @@ class update_quick_chart:
         last_time = web.input().last
         print last_time
 
-        def filter(arr):
-            return [x for x in arr if x['x'] > last_time]
+        def my_filter(arr):
+            print arr
+            arr2 =  [x for x in arr if x['x'] > last_time]
+            print arr2
+            return arr2
         measures =  {
             "TEMPERATURE": filter(get_measure_now("temperature")),
             # "HUMIDITY": [
