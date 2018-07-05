@@ -1,7 +1,7 @@
 import json
 import fcntl
 import rrdtool
-
+"""
 def init_measure(name, min, max):
     rrdtool.create(
         "../../storage/"+name+".rrd",
@@ -14,6 +14,20 @@ def init_measure(name, min, max):
         "RRA:AVERAGE:0.5:2016:4",
         "RRA:AVERAGE:0.5:8064:12",
         "DS:measure:GAUGE:3600:"+str(min)+":"+str(max))
+"""
+
+def init_measure(name, min, max):
+    rrdtool.create(
+        "../../storage/"+name+".rrd",
+        "--start", "-1y",
+        "--step", "30",
+        "RRA:LAST:0.5:1:10",
+        "RRA:AVERAGE:0.5:10:12",
+        "RRA:AVERAGE:0.5:120:24",
+        "RRA:AVERAGE:0.5:2880:7",
+        "RRA:AVERAGE:0.5:20160:4",
+        "RRA:AVERAGE:0.5:80640:12",
+        "DS:measure:GAUGE:3600:"+str(min)+":"+str(max))
 
 def save_measure(measure, time, value):
 
@@ -21,7 +35,10 @@ def save_measure(measure, time, value):
 
 
 def get_measure_now(measure):
-    return get_measure_from(measure, 3600)
+    return get_measure_from(measure, 300)
+
+def get_measure_minute(measure):
+        return get_measure_from(measure, 3600)
 
 def get_measure_hour(measure):
     return get_measure_from(measure, 24*3600)
@@ -41,13 +58,17 @@ def get_measure_from(measure, interval):
     recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("../../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("../../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
     ret = []
+<<<<<<< Updated upstream
     ts = start
+=======
+    ts = start + 30
+>>>>>>> Stashed changes
     for i in range(len(rows)):
 	    ret.append({})
 	    ret[i]['x'] = ts*1000
