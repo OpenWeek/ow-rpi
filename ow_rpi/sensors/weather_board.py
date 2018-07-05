@@ -45,6 +45,7 @@ import yaml
 
 #default device
 device = "i2c-1"
+pi_id = None
 
 si1132 = SI1132.SI1132(device)
 bme280 = BME280.BME280(device, 0x03, 0x02, 0x02, 0x02)
@@ -67,12 +68,12 @@ class ReadAndSend(threading.Thread):
         while True:
 	    ts = int(time.time())
             p = bme280.read_pressure()
-            client.publish("OWRPI/temperature", str(ts) + " - " + str(bme280.read_temperature()))
-            client.publish("OWRPI/humidity", str(ts) + " - " +str( bme280.read_humidity() ))
-            client.publish("OWRPI/pressure", str(ts) + " - " + str(p/100.0))
-            client.publish("OWRPI/infrared", str(ts) + " - " + str(si1132.readIR()))
-            client.publish("OWRPI/ultraviolet", str(ts) + " - " + str(si1132.readUV() / 100.0))
-            client.publish("OWRPI/luminosity", str(ts) + " - " + str(int(si1132.readVisible())))
+            client.publish("OWRPI/temperature", str(pi_id) + " - " + str(ts) + " - " + str(bme280.read_temperature()))
+            client.publish("OWRPI/humidity", str(pi_id) + " - " + str(ts) + " - " +str( bme280.read_humidity() ))
+            client.publish("OWRPI/pressure", str(pi_id) + " - " + str(ts) + " - " + str(p/100.0))
+            client.publish("OWRPI/infrared", str(pi_id) + " - " + str(ts) + " - " + str(si1132.readIR()))
+            client.publish("OWRPI/ultraviolet", str(pi_id) + " - " + str(ts) + " - " + str(si1132.readUV() / 100.0))
+            client.publish("OWRPI/luminosity", str(pi_id) + " - " + str(ts) + " - " + str(int(si1132.readVisible())))
 
             #print "UV_index : %.2f" % (si1132.readUV() / 100.0)
             #print "Visible :", int(si1132.readVisible()), "Lux"
@@ -84,7 +85,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
     parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
     parser.add_argument('--host', '-H', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
-    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of data sending in seconds (default is 300)')    
+    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of data sending in seconds (default is 300)')
+    parser.add_argument('--id', action='store', default=0, type=int, help='set the pi\'s id (default is 0)')
     
     try:
         with open("../config/weatherBoard.yaml", 'r') as stream:
@@ -101,6 +103,8 @@ if __name__ == '__main__':
         port = data['BROKER_PORT']
     if 'TIMESTEP' in data:
         timeStep = data['TIMESTEP']
+    if 'ID' in data:
+        pi_id = data['ID']
 
     args = parser.parse_args()
     broker = args.host

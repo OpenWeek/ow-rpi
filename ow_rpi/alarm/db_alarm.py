@@ -18,14 +18,14 @@ def init_db():
 	conn = get_database()
 	c = conn.cursor()
 	c.execute("DROP TABLE IF EXISTS log")
-	c.execute("CREATE TABLE log (timestamp INT, measure TEXT, value REAL)" )
+	c.execute("CREATE TABLE log (timestamp INT, measure TEXT, value REAL, station INT, degree TEXT)" )
 	conn.commit()
 	conn.close()
 	
-def save_log(timestamp, measure, value):
+def save_log(timestamp, measure, value, station, degree):
 	conn = get_database()
 	c = conn.cursor()
-	c.execute("INSERT INTO log VALUES ('"+ str(timestamp) +"', '"+ str(measure) +"', '"+ str(value) +"' )" )
+	c.execute("INSERT INTO log VALUES ('"+ str(timestamp) +"', '"+ str(measure) +"', '"+ str(value) +"', '"+ str(station) + "','" + str(degree) + "' )" )
 	conn.commit()
 	conn.close()
 	
@@ -76,3 +76,13 @@ def get_log_all(measure):
 def get_now():
 	return int(time.time())
 
+def generate_alarm(station, measure, timestamp, value):
+	config = get_config()
+	if float(value) <= float(config[measure]['MINMIN']):
+		save_log(timestamp, measure, value, station, 2)
+	elif float(value) <= float(config[measure]['MIN']):
+		save_log(timestamp, measure, value, station, 1)
+	elif float(value) >= float(config[measure]['MAXMAX']):
+		save_log(timestamp, measure, value, station, 2)
+	elif float(value) >= float(config[measure]['MAX']):
+		save_log(timestamp, measure, value, station, 1)
