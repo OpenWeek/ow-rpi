@@ -19,10 +19,21 @@
 import db_handler as db
 
 if __name__ == '__main__':
-
+    """
     db.init_measure('temperature', -273.15, 200)
     db.init_measure('pressure', 800, 1300)
     db.init_measure('luminosity', 0, 150000)
     db.init_measure('humidity', 0, 5000)
     db.init_measure('ultraviolet', 0, 5000)
     db.init_measure('infrared', 0, 5000)
+    """
+
+    list_pi = range(4)
+
+    for i in list_pi:
+        db.init_measure('pi'+str(i)+"_"+'temperature', -273.15, 200)
+        db.init_measure('pi'+str(i)+"_"+'pressure', 800, 1300)
+        db.init_measure('pi'+str(i)+"_"+'luminosity', 0, 150000)
+        db.init_measure('pi'+str(i)+"_"+'humidity', 0, 5000)
+        db.init_measure('pi'+str(i)+"_"+'ultraviolet', 0, 5000)
+        db.init_measure('pi'+str(i)+"_"+'infrared', 0, 5000)

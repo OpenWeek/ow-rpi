@@ -22,13 +22,30 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 
-
 def get_config():
-  with open("../../config/sendEmail.yaml", 'r') as stream:
+  with open("../config/send_email.yaml", 'r') as stream:
     try:
-      return yaml.safe_load(stream)
+      data = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
       print(exc)
+
+    if 'MAIL_USER' not in data:
+      data['MAIL_USER'] = "ow-rpi@gmx.fr"
+
+    if 'MAIL_RECIPIENT' not in data:
+      data['MAIL_RECIPIENT'] = "archein.lol@gmail.com"
+
+    if 'MAIL_PASS' not in data:
+      data['MAIL_PASS'] = ""
+
+    if 'SMTP_SERVER' not in data:
+      data['SMTP_SERVER'] = "mail.gmx.com"
+
+    if 'SMTP_PORT' not in data:
+      data['SMTP_PORT'] = 587
+
+    return data
+
 
 def send_mail(subject, text):
   try:
