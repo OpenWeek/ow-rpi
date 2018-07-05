@@ -30,6 +30,7 @@ import yaml
 client = None
 channel = "OWRPI/"
 measures = ["temperature", "humidity", "pressure", "infrared", "ultraviolet", "luminosity"]
+piIds = []
 
 def signal_handler(signal, frame):
     sys.exit(0)
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--keepalive', '-k', action='store', default=300, type=int, help='time while the connection is maintained when no data is transmitted in seconds (default is 300)')
 
     try:
-        with open("../../config/dataCollector.yaml", 'r') as stream:
+        with open("ow_rpi/config/dataCollector.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
                 broker = data['BROKER']
@@ -81,12 +82,8 @@ client = mqtt.Client("owid1")
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(broker, port, keepalive)
-client.subscribe("OWRPI/temp")
-client.subscribe("OWRPI/hum")
-client.subscribe("OWRPI/IR")
-client.subscribe("OWRPI/UV")
-client.subscribe("OWRPI/press")
-client.subscribe("OWRPI/visible")
+for m in measures :
+	client.subscribe(channel + m)
 client.loop_forever()
 
 
