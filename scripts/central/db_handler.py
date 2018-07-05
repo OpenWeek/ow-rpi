@@ -4,11 +4,10 @@ import rrdtool
 
 def init_measure(name, min, max):
     rrdtool.create(
-        "../storage/"+name+".rrd",
+        "../../storage/"+name+".rrd",
         "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
-        "RRA:AVERAGE:0.5:1:12",
         "RRA:AVERAGE:0.5:12:24",
         "RRA:AVERAGE:0.5:288:7",
         "RRA:AVERAGE:0.5:2016:4",
@@ -17,7 +16,7 @@ def init_measure(name, min, max):
 
 def save_measure(measure, time, value):
 
-    rrdtool.update("../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update("../../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 
 def get_measure_now(measure):
@@ -41,13 +40,13 @@ def get_measure_from(measure, interval):
     recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("../../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "300", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
     ret = []
-    ts = start
+    ts = start + 300
     for i in range(len(rows)):
 	    ret.append({})
 	    ret[i]['x'] = ts
