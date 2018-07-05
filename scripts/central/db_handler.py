@@ -1,6 +1,7 @@
 import json
 import fcntl
 import rrdtool
+import os
 """
 def init_measure(name, min, max):
     rrdtool.create(
@@ -32,7 +33,6 @@ def save_measure(measure, time, value):
 
     rrdtool.update("../../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
-
 def get_measure_now(measure):
     return get_measure_from(measure, 300)
 
@@ -50,6 +50,17 @@ def get_measure_week(measure):
 
 def get_measure_month(measure):
     return get_measure_from(measure, 12*4*7*24*3600)
+    
+def delete_measure(measure):
+    path = "../../storage/"+measure.lower()+".rrd"
+    try:
+        if os.path.isfile():
+            os.remove(path)
+        else:    
+            print("Error: %s file not found" % path)
+    except OSError, e:  
+        print ("Error: %s - %s." % (e.filename, e.strerror))
+
 
 def get_measure_from(measure, interval):
     """
@@ -70,5 +81,5 @@ def get_measure_from(measure, interval):
 	    ret[i]['y'] = rows[i][0]
 	    ts += step
 
-    #print("{} {} {}".format(start, end, step))
+    print("{} {} {}".format(start, end, step))
     return ret
