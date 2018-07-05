@@ -67,12 +67,12 @@ class ReadAndSend(threading.Thread):
         while True:
 	    ts = int(time.time())
             p = bme280.read_pressure()
-            client.publish("OWRPI/temp", str(ts) + " - " + str(bme280.read_temperature()))
-            client.publish("OWRPI/hum", str(ts) + " - " +str( bme280.read_humidity() ))
-            client.publish("OWRPI/press", str(ts) + " - " + str(p/100.0))
-            client.publish("OWRPI/IR", str(ts) + " - " + str(si1132.readIR()))
-            client.publish("OWRPI/UV", str(ts) + " - " + str(si1132.readUV() / 100.0))
-            client.publish("OWRPI/visible", str(ts) + " - " + str(int(si1132.readVisible())))
+            client.publish("OWRPI/temperature", str(ts) + " - " + str(bme280.read_temperature()))
+            client.publish("OWRPI/humidity", str(ts) + " - " +str( bme280.read_humidity() ))
+            client.publish("OWRPI/pressure", str(ts) + " - " + str(p/100.0))
+            client.publish("OWRPI/infrared", str(ts) + " - " + str(si1132.readIR()))
+            client.publish("OWRPI/ultraviolet", str(ts) + " - " + str(si1132.readUV() / 100.0))
+            client.publish("OWRPI/luminosity", str(ts) + " - " + str(int(si1132.readVisible())))
 
             #print "UV_index : %.2f" % (si1132.readUV() / 100.0)
             #print "Visible :", int(si1132.readVisible()), "Lux"
