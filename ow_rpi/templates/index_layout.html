@@ -101,6 +101,8 @@
                     for(let ii=0; ii<fixedLen; ++ii){
                       data[iname][ii] = nd[iname][ii]
                     }
+                    data[iname].splice(-1,1);
+                 
                     // data[iname].reverse()
                     // for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
                     // data[iname].reverse()
@@ -140,8 +142,11 @@
                       display:     true,
                       labelString: 'Date'
                   },
+		  gridLines:{
+		  	drawTicks : true
+		  },
                   time: {
-                    unitStepSize: 10,
+                    
                     displayFormats: {
                       'second' : 'HH:mm:ss',
                       'minute': 'HH:mm',
@@ -166,6 +171,7 @@
                   // Will hide axis if the variable is crossed out
                   beforeUpdate: function(){
                     this.config.options.scales.yAxes[i].display = visibleAxes[i]
+		
                   }
                 };
               })

@@ -20,6 +20,7 @@ from ow_rpi.db_handler.db_handler import *
 import threading
 import time
 import paho.mqtt.client as mqtt
+from ow_rpi.alarm.db_alarm import *
 import signal
 import sys
 import argparse
@@ -47,7 +48,8 @@ def on_message(client, userdata, msg):
     
     for m in measures :
 		if msg.topic == channel + m :
-			save_measure(m,payload[0],payload[1])
+			save_measure(0,m,payload[0],payload[1])
+                        generate_alarm(0,m,payload[0],payload[1])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')

@@ -25,7 +25,7 @@ import sys
 
 def init_measure(name, min, max):
     rrdtool.create(
-        "../storage/"+name+".rrd",
+        "ow_rpi/storage/"+name+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -43,7 +43,7 @@ def save_measure(measure, time, value):
 """
 def save_measure(pi_id, measure, time, value):
 
-    rrdtool.update("../storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update("ow_rpi/storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 """
 def get_measure_now(measure):
@@ -112,7 +112,7 @@ def get_measure_from(measure, interval):
 """
 def get_measure_from(pi_id, measure, interval):
 
-    result = rrdtool.fetch("../storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("ow_rpi/storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
