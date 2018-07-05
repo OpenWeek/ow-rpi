@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#from Adafruit_BME280 import *
 from db_handler import *
 import threading
 import time
@@ -60,22 +59,23 @@ if __name__ == '__main__':
         with open("ow_rpi/config/dataCollector.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
-                broker = data['BROKER']
-                port = data['BROKER_PORT']
-                keepalive = data['BROKER_KEEPALIVE']
             except yaml.YAMLError as exc:
                 print(exc)
     except IOError as exc:
         print(exc)
+
+    if 'BROKER' in data:
+        broker = data['BROKER']
+    if 'BROKER_PORT' in data:
+        port = data['BROKER_PORT']
+    if 'BROKER_KEEPALIVE'
+        keepalive = data['BROKER_KEEPALIVE']
 
     args = parser.parse_args()
     broker = args.host
     port = args.port
     keepalive = args.keepalive
     
-
-
-            
 signal.signal(signal.SIGINT, signal_handler)
 
 client = mqtt.Client("owid1")
