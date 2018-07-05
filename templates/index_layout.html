@@ -84,8 +84,8 @@
         var lastData = data[dataParams.names[0]];
         var lastTime = 0;
         for (var lasti=lastData.length-1; lasti >= 0; lasti--) {
-            if (lastData[i].y){
-              lastTime = lastData[i].x;
+            if (lastData[lasti].y){
+              lastTime = lastData[lasti].x;
               break;
             }
         }
