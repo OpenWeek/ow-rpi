@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
 import json
 import fcntl
 import rrdtool
+import sys
 """
 def init_measure(name, min, max):
     rrdtool.create(
-        "../../storage/"+name+".rrd",
+        "../storage/"+name+".rrd",
         "--start", "-2h",
         "--step", "300",
         "RRA:LAST:0.5:1:12",
@@ -35,7 +37,7 @@ def init_measure(name, min, max):
 
 def init_measure(name, min, max):
     rrdtool.create(
-        "../../storage/"+name+".rrd",
+        "ow_rpi/storage/"+name+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -48,10 +50,12 @@ def init_measure(name, min, max):
 
 def save_measure(measure, time, value):
 
-    rrdtool.update("../../storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update("ow_rpi/storage/"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 
 def get_measure_now(measure):
+    print os.getcwd()
+    print "\n"
     return get_measure_from(measure, 300)
 
 def get_measure_minute(measure):
@@ -75,7 +79,7 @@ def get_measure_from(measure, interval):
     recorded in the last <interval> seconds.
     """
 
-    result = rrdtool.fetch("../../storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("ow_rpi/storage/"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]

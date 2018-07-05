@@ -21,7 +21,8 @@
 
 import web
 import json
-from db_handler import *
+from ow_rpi.db_handler.db_handler import *
+
 from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
@@ -34,7 +35,7 @@ def render_template(template_name, **context):
     globals = context.pop('globals', [])
 
     jinja_env = Environment(
-            loader = FileSystemLoader("../../templates"),
+            loader = FileSystemLoader("ow_rpi/templates"),
             extensions=extensions
     )
 
