@@ -82,6 +82,7 @@
   function getGraphUpdate(){
       if (quickUpdate){
         var lastData = data.TEMPERATURE;
+        console.log(lastData[lastData.length-1].x)
         $.ajax({
             url: "chart?last="+lastData[lastData.length-1].x,
             success: function(result){
