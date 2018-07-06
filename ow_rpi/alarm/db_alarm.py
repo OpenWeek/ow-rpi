@@ -72,7 +72,7 @@ def get_log_month(measure = None, station = None, gravity = None):
     now = get_now()
     return get_log_from( now -(4*7*24*3600), now, measure, station, gravity)
     
-def get_log_from(start, end, measure = None, station = None, gravity = None):
+def get_log_from(start = 0, end = None, measure = None, station = None, gravity = None):
 	conn = get_database()
 	c = conn.cursor()
 	query = "SELECT * FROM log where "
@@ -82,6 +82,8 @@ def get_log_from(start, end, measure = None, station = None, gravity = None):
 		query +=  "station = '"+ str(station) +"' AND "
 	if gravity != None :
 		query +=  "degree = '"+ str(gravity) +"' AND "
+	if end is None:
+		end = get_now()
 	query += str(start) +" <= timestamp AND timestamp <= " + str(end)
 	test = c.execute(query)
 	result = transform_date(test)
