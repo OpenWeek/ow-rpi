@@ -90,10 +90,13 @@ def get_log_from(start, end, measure = None, station = None, gravity = None):
 	conn.close()
 	return result
 	
-def get_log_all(measure):
+def get_log_all(measure = None):
 	conn = get_database()
 	c = conn.cursor()
-	test = c.execute("SELECT * FROM log where measure = '"+ measure  + "'")
+	if measure is not None:
+		test = c.execute("SELECT * FROM log where measure = '"+ measure  + "'")
+	else:
+		test = c.execute("SELECT * FROM log")
 	result = []
 	for i in test:
 		result.append(i)
