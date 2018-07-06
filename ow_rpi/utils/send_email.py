@@ -78,5 +78,5 @@ def send_mail(subject, text, mail_address = None):
 	except:
 		traceback.print_exc()
 		return False
-
+	
 
