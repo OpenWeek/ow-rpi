@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#import db_handler as db
+import db_handler as db
 import yaml
 
 def get_config():
-    with open("../config/db_config.yaml", 'r') as stream:
+    with open("ow_rpi/config/db_config.yaml", 'r') as stream:
         try:
             return yaml.safe_load(stream)
         except yaml.YAMLError as exc:
