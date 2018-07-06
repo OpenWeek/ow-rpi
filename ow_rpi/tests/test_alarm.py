@@ -22,7 +22,7 @@ import os
 
 class TestDBMethods(unittest.TestCase):
     def setUp(self):
-		self.measure_temp = "test_alarm_temperature"
+		self.measure_temp = "temperature"
 		self.pi_id = 0
 		init_db()
 		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 14)
@@ -31,8 +31,10 @@ class TestDBMethods(unittest.TestCase):
 		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 23)
 
     def test_alarm1(self):
-		mytest = [(1530807202,u''+self.measure_temp, 14.0, 0, u'2'), (1530807202, u''+self.measure_temp, 16.0, 0, u'1'), (1530807202, u''+self.measure_temp, 21.0, 0, u'1'), (1530807202, u''+self.measure_temp, 23.0, 0, u'2')]
+		mytest = [['2018-07-05 18:13:22', u''+self.measure_temp, 14.0, 0, u'-2'], ['2018-07-05 18:13:22', u''+self.measure_temp, 16.0, 0, u'-1'], ['2018-07-05 18:13:22', u''+self.measure_temp, 21.0, 0, u'1'], ['2018-07-05 18:13:22', u''+self.measure_temp, 23.0, 0, u'2']]
+		
 		values = get_log_all(self.measure_temp)
+		print values
 		for i in range(len(values)):
 			for j in range(len(values[i])):
 				self.assertEqual(mytest[i][j], values[i][j])
