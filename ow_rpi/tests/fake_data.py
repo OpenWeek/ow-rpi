@@ -16,27 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#import db_handler as db
-import yaml
-
-def get_config():
-    with open("../config/db_config.yaml", 'r') as stream:
-        try:
-            return yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
+import db_handler as db
+import time
+import os
+import random as rd
 
 if __name__ == '__main__':
-    """
-    db.init_measure('temperature', -273.15, 200)
-    db.init_measure('pressure', 800, 1300)
-    db.init_measure('luminosity', 0, 150000)
-    db.init_measure('humidity', 0, 5000)
-    db.init_measure('ultraviolet', 0, 5000)
-    db.init_measure('infrared', 0, 5000)
-    """
-    config = get_config()
-    measures = config['measures'].split(" ")
-    for i in range(config['number_of_pi']):
-        for m in measures:
-            db.init_measure(i,m)
+    interval = 365*24*3600
+    now = int(time.time())
+    start = now-interval
+
+    for t in range(start, now, 30):
+        var = float(rd.randint(-1000,1000))/10000
+        var2 = float(rd.randint(-1000,1000))/1000
+        db.save_measure(0, 'temperature', t, 18+var)
+        db.save_measure(0, 'pressure', t, 1000+var2)

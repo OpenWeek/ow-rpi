@@ -15,11 +15,15 @@
 <body>
   <div class="row">
       <div class="col-lg-2"></div>
-      <div class="col-lg-8">
+      <div class="col-lg-8 chart">
         <canvas id="myChart" width="200" height="100"></canvas>
-        <input data-slider-value="0" id="ex4" type="text"/>
       </div>
       <div class="col-lg-2"></div>
+  </div>
+  <div class="row">
+	<div class="col-lg-3"></div>
+	<div class="col-lg-6"><input data-slider-value="0" id="ex4" type="text"/>
+	<div class="col-lg-3"></div>
   </div>
   <script>
       // Functions for the sliders
@@ -150,7 +154,7 @@
                     displayFormats: {
                       'second' : 'HH:mm:ss',
                       'minute': 'HH:mm',
-                      'hour': 'DD MMM HH:mm',
+                      'hour': 'DD/MM HH:mm',
                        'day': 'DD MMM'
                     }
                   }

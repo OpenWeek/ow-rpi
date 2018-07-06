@@ -27,7 +27,9 @@ from jinja2 import Environment, FileSystemLoader
 
 urls = ("/", "chart",
         "/chart","update_quick_chart",
-        "/update","update_chart"
+        "/update","update_chart",
+	"/log","log",
+        "/logtable","log_table"
 )
 
 def render_template(template_name, **context):
@@ -110,6 +112,21 @@ class update_chart:
 
         measures =  get_measures(ALL_FORMATS[format], 0)
         return json.dumps(measures)
+
+class log:
+    def GET(self):
+     context = {
+             "log":[1,2,3,4,5,6,7]
+	 
+        }
+     return render_template("log.html",**context)
+
+class log_table:
+    def GET(self):
+        context = {
+            "log":[["6/07/2018",1,"Pressure",1001,2]]
+        }
+        return render_template("logtable.html",**context)
 
 class chart:
     def GET(self):

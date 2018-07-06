@@ -100,15 +100,15 @@ def generate_alarm(station, measure, timestamp, value):
 	config = get_config()
 	alarm = True
 	gravity = 0
-	subject = "ALARM FROM STATION :" + str(station) + " GRAVITY : "
+	subject = "ALARM FROM STATION : " + str(station) + " GRAVITY : "
 	if float(value) <= float(config[measure]['MINMIN']):
 		subject += "2 !!!"
 		gravity = "2 !!!"
-		save_log(timestamp, measure, value, station, 2)
+		save_log(timestamp, measure, value, station, -2)
 	elif float(value) <= float(config[measure]['MIN']):
 		subject += "1"
 		gravity = "1"
-		save_log(timestamp, measure, value, station, 1)
+		save_log(timestamp, measure, value, station, -1)
 	elif float(value) >= float(config[measure]['MAXMAX']):
 		subject += "2 !!!"
 		gravity = "2 !!!"
@@ -122,4 +122,5 @@ def generate_alarm(station, measure, timestamp, value):
 	text = "ALARM FROM : \n\tSTATION : "+ str(station) + "\n\tMEASURE : "+ str(measure)+ "\n\tVALUE : "+ str(value) + "\n\tGRAVITY : "+ str(gravity) + "\n\tDATE : "+ str(timestamp_to_date(int(timestamp)))
 	
 	if alarm:
-		send_mail(subject,text)
+		print config['list_email']
+		send_mail(subject,text, config['list_email'])
