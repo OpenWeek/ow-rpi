@@ -13,6 +13,10 @@
     <script type="text/javascript" src="/static/js/bootstrap-slider.min.js"></script>
 </head>
 <body>
+	<a href="/log" class="btn btn-info" role="button">Log file</a>
+  
+ 
+
   <div class="row">
       <div class="col-lg-2"></div>
       <div class="col-lg-8 chart">
@@ -25,6 +29,9 @@
 	<div class="col-lg-6"><input data-slider-value="0" id="ex4" type="text"/>
 	<div class="col-lg-3"></div>
   </div>
+ 
+	  
+ 
   <script>
       // Functions for the sliders
       $("#ex4").slider({
@@ -39,7 +46,7 @@
           $.ajax({
               url: "update?format="+val.value.newValue,
               success: function(result){
-                console.log(result)
+               
                 sliderPosition = val.value.newValue;
                 if (sliderPosition == 0) quickUpdate = true
                 else quickUpdate = false
@@ -93,11 +100,11 @@
               break;
             }
         }
-        console.log(lasti)
+        
         $.ajax({
             url: "chart?last="+lastTime,
             success: function(result){
-              console.log(result)
+              
                 var nd = result;
                 dataParams.name.forEach( iname => {
                     fixedLen = data[iname].length

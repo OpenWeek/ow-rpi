@@ -140,6 +140,7 @@ class log_table:
         if data.start == "None":
             data.start = 0
         else:
+            print data.start
             data.start = date_to_timestamp(data.start,"%d/%m/%y")
         if data.end == "None":
             data.end = None
