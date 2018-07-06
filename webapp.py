@@ -48,15 +48,15 @@ def render_template(template_name, **context):
 
     return jinja_env.get_template(template_name).render(context)
 
-'''
-    @fun: a function returning data, that takes 2 args:
-            - the pi-id
-            - the measure-name
-          in that order
-    @pi_id: the id of the pi from which we want to extract the data
-    @returns: a dictionary with the data for according to @fun from @pi-id for all measures in the config file
-'''
 def get_measures(fun, pi_id):
+    '''
+        @fun: a function returning data, that takes 2 args:
+                - the pi-id
+                - the measure-name
+              in that order
+        @pi_id: the id of the pi from which we want to extract the data
+        @returns: a dictionary with the data for according to @fun from @pi-id for all measures in the config file
+    '''
     with open("ow_rpi/config/chart.yaml", 'r') as file:
         try:
             complete_file = yaml.load(file)
@@ -96,18 +96,24 @@ def get_parameters():
             return {}
 
 class update_quick_chart:
+    '''
+        Handles the 'continuous' data update of the 'now' status
+    '''
     def GET(self):
         web.header('Content-Type', 'application/json')
         last_time = int(web.input().last)
 
         def my_filter(arr):
-            # TODO: do a continuous update, don't resend everything
-            return  arr#[x for x in arr if x['x'] > last_time]
+            # TODO: do a continuous update, don't resend everything by using this function
+            return  [x for x in arr if x['x'] > last_time]
 
         measures = get_measures(get_measure_now, 0)
-        return json.dumps([my_filter(x) for x in measures])
+        return json.dumps(measures)
 
 class update_chart:
+    '''
+        Handles the data update on scale transitions (now, hours, weeks ...)
+    '''
     def GET(self):
         web.header('Content-Type', 'application/json')
         format = int(web.input().format)
@@ -148,6 +154,9 @@ class log_table:
         return render_template("logtable.html",**context)
 
 class chart:
+    '''
+        Handles the first page request for the graphs
+    '''
     def GET(self):
         context = {
                 "chart_data": json.dumps(get_measures(get_measure_now, 0)),
