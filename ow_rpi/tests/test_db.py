@@ -21,7 +21,7 @@ import time
 import unittest
 import os
 
-class TestStringMethods(unittest.TestCase):
+class TestDBMethods(unittest.TestCase):
     def setUp(self):
         self.interval = 7*24*3600
         start = time.time() - self.interval

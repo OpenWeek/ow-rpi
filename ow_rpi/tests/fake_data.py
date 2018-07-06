@@ -34,4 +34,4 @@ if __name__ == '__main__':
         save_measure(0, 'humidity', t, 68+var)
         save_measure(0, 'luminosity', t, 1000+var)
         save_measure(0, 'infrared', t, 29+var2)
-        save_measure(0, 'ultraviolet', t, 0.02+var2/10)
+        save_measure(0, 'ultraviolet', t, 0.02+var/100)
