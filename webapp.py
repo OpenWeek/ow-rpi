@@ -43,23 +43,64 @@ def render_template(template_name, **context):
 
     return jinja_env.get_template(template_name).render(context)
 
+'''
+    @fun: a function returning data, that takes 2 args:
+            - the pi-id
+            - the measure-name
+          in that order
+    @pi_id: the id of the pi from which we want to extract the data
+    @returns: a dictionary with the data for according to @fun from @pi-id for all measures in the config file
+'''
+def get_measures(fun, pi_id):
+    with open("ow_rpi/config/chart.yaml", 'r') as file:
+        try:
+            complete_file = yaml.load(file)
+            measures = complete_file['measures']
+
+            chart_data = {}
+            for key in measures.keys():
+                chart_data[key] = fun(pi_id, key.lower())
+
+            return chart_data
+
+        except yaml.YAMLError as exc:
+            print(exc)
+            return {}
+
+def get_parameters():
+    with open("ow_rpi/config/chart.yaml", 'r') as file:
+        try:
+            complete_file = yaml.load(file)
+            measures = complete_file['measures']
+            parameters = complete_file['parameters']
+
+            data_params = {}
+            for param in parameters:
+                data_params[param] = []
+            data_params["name"] = []
+
+            for key, values in measures.items():
+                data_params["name"] += [key]
+                for param, val in values.items():
+                    data_params[param] += [val]
+
+            return data_params
+
+        except yaml.YAMLError as exc:
+            print(exc)
+            return {}
+
 class update_quick_chart:
     def GET(self):
         web.header('Content-Type', 'application/json')
         last_time = int(web.input().last)
 
         def my_filter(arr):
+            # TODO: do a continuous update, don't resend everything
             return  arr#[x for x in arr if x['x'] > last_time]
 
-        measures =  {
-            "TEMPERATURE": my_filter(get_measure_now(0,"temperature")),
-            # "HUMIDITY": [
-            #     {'x': 1530542690000, 'y':0.2},
-            #     {'x': 1530542760000, 'y':0.4}
-            # ],
-            "PRESSURE":  my_filter(get_measure_now(0,"pressure"))
-        }# get_measure_all("TEMPERATURE")
-        return json.dumps(measures)
+        measures = get_measures(get_measure_now, 0)
+        return json.dumps([my_filter(x) for x in measures])
 
 class update_chart:
     def GET(self):
@@ -67,67 +108,14 @@ class update_chart:
         format = int(web.input().format)
         ALL_FORMATS = [get_measure_now, get_measure_hour, get_measure_day, get_measure_week, get_measure_month]
 
-        format_f = ALL_FORMATS[format]
-
-        measures =  {
-            "TEMPERATURE": format_f(0,"temperature")
-            # [
-            #     {'x': 1530342750000, 'y':32},
-            #     {'x': 1530442755000, 'y':30},
-            #     {'x': 1530542760000, 'y':35}
-            # ]
-            ,
-            # "HUMIDITY": [
-            #     {'x': 1530342750000, 'y':0.3},
-            #     {'x': 1530442757000, 'y':0.7},
-            #     {'x': 1530542760000, 'y':0.4}
-            # ],
-            "PRESSURE": format_f(0,"pressure")
-            # [
-            #     {'x': 1530342750000, 'y':980},
-            #     {'x': 1530442758000, 'y':1003},
-            #     {'x': 1530542760000, 'y':995}
-            # ]
-        }# get_measure_all("TEMPERATURE")
+        measures =  get_measures(ALL_FORMATS[format], 0)
         return json.dumps(measures)
 
 class chart:
     def GET(self):
         context = {
-                "chart_data": json.dumps(
-                    {
-                        "TEMPERATURE": get_measure_now(0,"temperature")
-                        # [
-                        #     {'x': 1530542612000, 'y':20},
-                        #     {'x': 1530542622000, 'y':25},
-                        #     {'x': 1530542698000, 'y':22}
-                        # ]
-                        ,
-                        # "HUMIDITY":
-                        # [
-                        #     {'x': 1530542645000, 'y':0.3},
-                        #     {'x': 1530542667000, 'y':0.7},
-                        #     {'x': 1530542685000, 'y':0.6}
-                        # ]
-                        # ,
-                        "PRESSURE": get_measure_now(0,"pressure")
-                        # [
-                        #     {'x': 1530542602000, 'y':1050},
-                        #     {'x': 1530542647000, 'y':995},
-                        #     {'x': 1530542649000, 'y':1003}
-                        # ]
-                    }),
-                "data_params": json.dumps(
-                    {
-                        "names": ["TEMPERATURE", "PRESSURE",], # "HUMIDITY"],
-                        "labels": ["Temperature", "Pressure", "Humidity"],
-                        "units": ["°C", "hPa", "%"],
-                        "colors": ["red", "green", "blue"],
-                        "positions": ["left", "right", "right"],
-                        "mins": [15, 990, 0.2],
-                        "maxs": [30, 1120, 0.7]
-                    }
-                )
+                "chart_data": json.dumps(get_measures(get_measure_now, 0)),
+                "data_params": json.dumps(get_parameters())
                 }
         return render_template("chart.html", **context)
 

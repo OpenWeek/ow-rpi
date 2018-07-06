@@ -39,7 +39,7 @@
                 sliderPosition = val.value.newValue;
                 if (sliderPosition == 0) quickUpdate = true
                 else quickUpdate = false
-                dataParams.names.forEach(iname => {
+                dataParams.name.forEach(iname => {
                     let oldLen = data[iname].length;
                     let newLen = result[iname].length;
                     let ind = 0;
@@ -69,7 +69,7 @@
   // It contains all parameters
   var data = {{ chart_data }};
   var dataParams = {{ data_params }};
-  var dataLength = dataParams.names.length;
+  var dataLength = dataParams.name.length;
   var dataInd = Array.from(Array(dataLength).keys()); // array to facilitate mapping
 
   var quickUpdate = true; // true iff we are on "now" (=continuous update)
@@ -81,7 +81,7 @@
   */
   function getGraphUpdate(){
       if (quickUpdate){
-        var lastData = data[dataParams.names[0]];
+        var lastData = data[dataParams.name[0]];
         var lastTime = 0;
         for (var lasti=lastData.length-1; lasti >= 0; lasti--) {
             if (lastData[lasti].y){
@@ -95,14 +95,14 @@
             success: function(result){
               console.log(result)
                 var nd = result;
-                dataParams.names.forEach( iname => {
+                dataParams.name.forEach( iname => {
                     fixedLen = data[iname].length
                     // addedLen = nd[iname].length
                     for(let ii=0; ii<fixedLen; ++ii){
                       data[iname][ii] = nd[iname][ii]
                     }
                     data[iname].splice(-1,1);
-                 
+
                     // data[iname].reverse()
                     // for(let ii=0; ii<addedLen-1; ii++) data[iname].pop()
                     // data[iname].reverse()
@@ -120,9 +120,9 @@
       data:    {
           datasets: dataInd.map(function(i) {
             return {
-              label: dataParams.labels[i],
-              data: data[dataParams.names[i]],
-              borderColor: dataParams.colors[i],
+              label: dataParams.label[i],
+              data: data[dataParams.name[i]],
+              borderColor: dataParams.color[i],
               yAxisID: "y"+i,
               fill: false
             };
@@ -146,7 +146,7 @@
 		  	drawTicks : true
 		  },
                   time: {
-                    
+
                     displayFormats: {
                       'second' : 'HH:mm:ss',
                       'minute': 'HH:mm',
@@ -158,38 +158,30 @@
               yAxes: dataInd.map(function(i) {
                 return {
                   id: "y"+i,
-                  position: dataParams.positions[i],
+                  position: dataParams.position[i],
                   ticks: {
-                    suggestedMin: dataParams.mins[i],
-                    suggestedMax: dataParams.maxs[i],
-                    fontColor: dataParams.colors[i]
+                    suggestedMin: dataParams.min[i],
+                    suggestedMax: dataParams.max[i],
+                    fontColor: dataParams.color[i]
                   },
                   scaleLabel: {
                     display: true,
-                    labelString: dataParams.units[i]
+                    labelString: dataParams.unit[i]
                   },
                   // Will hide axis if the variable is crossed out
                   beforeUpdate: function(){
                     this.config.options.scales.yAxes[i].display = visibleAxes[i]
-		
+
                   }
                 };
               })
           },
-          // legend: {
-          //   onClick: (e, legendItem) => {
-          //     console.log(e)
-          //     lind = dataParams.labels.indexOf(legendItem.text)
-          //     visibleAxes[lind] = false
-          //      Chart.defaults.global.legend.onClick(this, e, legendItem)
-          //   }
-          // }
       }
   };
   // Small hack to EXTEND the legend.onClick
   var original = Chart.defaults.global.legend.onClick;
   Chart.defaults.global.legend.onClick = function(e, legendItem) {
-      lind = dataParams.labels.indexOf(legendItem.text);
+      lind = dataParams.label.indexOf(legendItem.text);
       visibleAxes[lind] = !visibleAxes[lind];
       original.call(this, e, legendItem);
   };
