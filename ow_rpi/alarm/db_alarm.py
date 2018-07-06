@@ -84,9 +84,7 @@ def get_log_from(start, end, measure = None, station = None, gravity = None):
 		query +=  "degree = '"+ str(gravity) +"' AND "
 	query += str(start) +" <= timestamp AND timestamp <= " + str(end)
 	test = c.execute(query)
-	result = []
-	for i in test:	
-		result.append(i)
+	result = transform_date(test)
 	conn.close()
 	return result
 	
@@ -97,15 +95,23 @@ def get_log_all(measure = None):
 		test = c.execute("SELECT * FROM log where measure = '"+ measure  + "'")
 	else:
 		test = c.execute("SELECT * FROM log")
-	result = []
-	for i in test:
-		result.append(i)
+	result = transform_date(test)
 	conn.close()
 	return result	
 	
 def get_now():
 	return int(time.time())
 
+def transform_date(info):
+	result = []
+	for i in info:
+		column = []
+		column.append(timestamp_to_date(i[0]))
+		for j in range(1,len(i)) :
+			column.append(i[j])
+		result.append(column)
+	return result
+	
 def generate_alarm(station, measure, timestamp, value):
 	config = get_config()
 	alarm = True

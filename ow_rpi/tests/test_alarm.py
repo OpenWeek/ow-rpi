@@ -24,8 +24,9 @@ generate_alarm(0,"temperature", 1530807202, 14)
 generate_alarm(0,"temperature", 1530807202, 16)
 generate_alarm(0,"temperature", 1530807202, 21)
 generate_alarm(0,"temperature", 1530807202, 23)
-mytest = [(1530807202, u'temperature', 14.0, 0, u'2'), (1530807202, u'temperature', 16.0, 0, u'1'), (1530807202, u'temperature', 21.0, 0, u'1'), (1530807202, u'temperature', 23.0, 0, u'2')]
+mytest = [['2018-07-05 18:13:22', u'temperature', 14.0, 0, u'-2'], ['2018-07-05 18:13:22', u'temperature', 16.0, 0, u'-1'], ['2018-07-05 18:13:22', u'temperature', 21.0, 0, u'1'], ['2018-07-05 18:13:22', u'temperature', 23.0, 0, u'2']]
 values = get_log_all("temperature")
+print values
 ok = True
 for i in range(len(values)):
 	for j in range(len(values[i])):
@@ -42,5 +43,5 @@ generate_alarm(0,"temperature", 1530807202, 14)
 generate_alarm(1,"temperature", 1530807202, 16)
 generate_alarm(0,"humidity", 1530807202, 21)
 generate_alarm(1,"humidity", 1530807202, 23)
-values = get_log_month(None, 1)
+values = get_log_all()
 print values
