@@ -49,34 +49,41 @@ def save_log(timestamp, measure, value, station, degree):
 	conn.commit()
 	conn.close()
 	
-def get_log_now(measure):
+def get_log_now(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -300, now)
+    return get_log_from( now -300, now, measure,station, gravity)
 
-def get_log_minute(measure):
-    return get_log_now(measure)
+def get_log_minute(measure = None, station = None, gravity = None):
+    return get_log_now(measure, station, gravity)
 
-def get_log_hour(measure):
+def get_log_hour(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -3600, now)
+    return get_log_from(now -3600, now, measure, station, gravity)
 
-def get_log_day(measure):
+def get_log_day(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now - (24*3600), now)
+    return get_log_from(now - (24*3600), now,measure, station, gravity)
 
-def get_log_week(measure):
+def get_log_week(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -(7*24*3600), now)
+    return get_log_from(now -(7*24*3600), now,measure, station, gravity)
 
-def get_log_month(measure):
+def get_log_month(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -(4*7*24*3600), now)
+    return get_log_from( now -(4*7*24*3600), now, measure, station, gravity)
     
-def get_log_from(measure, start, end):
+def get_log_from(start, end, measure = None, station = None, gravity = None):
 	conn = get_database()
 	c = conn.cursor()
-	print "SELECT * FROM log where measure = '"+ measure +"' AND '"+ str(start) +"' <= timestamp AND timestamp <= '" + str(end) + "'"
-	test = c.execute("SELECT * FROM log where measure = '"+ measure +"' AND "+ str(start) +" <= timestamp AND timestamp <= " + str(end) )
+	query = "SELECT * FROM log where "
+	if measure != None :
+		query +=  "measure = '"+ measure +"' AND "
+	if station != None :
+		query +=  "station = '"+ str(station) +"' AND "
+	if gravity != None :
+		query +=  "degree = '"+ str(gravity) +"' AND "
+	query += str(start) +" <= timestamp AND timestamp <= " + str(end)
+	test = c.execute(query)
 	result = []
 	for i in test:	
 		result.append(i)
@@ -100,15 +107,15 @@ def generate_alarm(station, measure, timestamp, value):
 	config = get_config()
 	alarm = True
 	gravity = 0
-	subject = "ALARM FROM STATION :" + str(station) + " GRAVITY : "
+	subject = "ALARM FROM STATION : " + str(station) + " GRAVITY : "
 	if float(value) <= float(config[measure]['MINMIN']):
 		subject += "2 !!!"
 		gravity = "2 !!!"
-		save_log(timestamp, measure, value, station, 2)
+		save_log(timestamp, measure, value, station, -2)
 	elif float(value) <= float(config[measure]['MIN']):
 		subject += "1"
 		gravity = "1"
-		save_log(timestamp, measure, value, station, 1)
+		save_log(timestamp, measure, value, station, -1)
 	elif float(value) >= float(config[measure]['MAXMAX']):
 		subject += "2 !!!"
 		gravity = "2 !!!"
@@ -122,4 +129,5 @@ def generate_alarm(station, measure, timestamp, value):
 	text = "ALARM FROM : \n\tSTATION : "+ str(station) + "\n\tMEASURE : "+ str(measure)+ "\n\tVALUE : "+ str(value) + "\n\tGRAVITY : "+ str(gravity) + "\n\tDATE : "+ str(timestamp_to_date(int(timestamp)))
 	
 	if alarm:
-		send_mail(subject,text)
+		print config['list_email']
+		send_mail(subject,text, config['list_email'])

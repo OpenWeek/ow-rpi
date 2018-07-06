@@ -22,16 +22,16 @@ import fcntl
 import rrdtool
 import sys
 
-directory = "../storage"
+directory = "ow_rpi/storage"
 path = directory+"/"
 
 def init_measure(pi_id, measure):
     if not os.path.exists(directory):
         os.makedirs(directory)
-
+    pistring = str(pi_id)
     rrdtool.create(
        # "ow_rpi/storage/"+name+".rrd",
-        path+"pi"+str(pi_id)+"_"+measure+".rrd",
+        path+"pi"+pistring+"_"+measure+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -40,7 +40,7 @@ def init_measure(pi_id, measure):
         "RRA:AVERAGE:0.5:2880:7",
         "RRA:AVERAGE:0.5:20160:4",
         "RRA:AVERAGE:0.5:80640:12",
-        "DS:measure:GAUGE:3600:U:U)
+        "DS:measure:GAUGE:3600:U:U")
 
 
 """
@@ -50,9 +50,9 @@ def save_measure(measure, time, value):
 """
 def save_measure(pi_id, measure, time, value):
 
-    #rrdtool.update("ow_rpi/storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
+    rrdtool.update("ow_rpi/storage/pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
-    rrdtool.update(path+"pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
+    #rrdtool.update(path+"pi"+str(pi_id)+"_"+measure.lower()+".rrd", str(time)+":"+str(value))
 
 """
 def get_measure_now(measure):
@@ -126,16 +126,16 @@ def get_measure_from(measure, interval):
 """
 def get_measure_from(pi_id, measure, interval):
 
-    #result = rrdtool.fetch("ow_rpi/storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
+    result = rrdtool.fetch("ow_rpi/storage/pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
-    result = rrdtool.fetch(path+"pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
+    #result = rrdtool.fetch(path+"pi"+str(pi_id)+"_"+measure+".rrd", "AVERAGE", "-a", "-r", "30", "-s", str(-interval), "-e", "now")
 
     start, end, step = result[0]
     ds = result[1]
     rows = result[2]
     ret = []
     ts = start + 30
-    for i in range(len(rows)):
+    for i in range(len(rows)-1):
 	    ret.append({})
 	    ret[i]['x'] = ts*1000
 	    ret[i]['y'] = rows[i][0]

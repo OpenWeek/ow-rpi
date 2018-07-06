@@ -33,3 +33,14 @@ for i in range(len(values)):
 			ok = False
 			
 print ok
+
+
+
+init_db()
+
+generate_alarm(0,"temperature", 1530807202, 14)
+generate_alarm(1,"temperature", 1530807202, 16)
+generate_alarm(0,"humidity", 1530807202, 21)
+generate_alarm(1,"humidity", 1530807202, 23)
+values = get_log_month(None, 1)
+print values

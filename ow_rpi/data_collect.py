@@ -49,8 +49,8 @@ def on_message(client, userdata, msg):
     payload = msg.payload.split(" - ")
     for m in measures :
 		if msg.topic == channel + m :
-			save_measure(0,m,payload[0],payload[1])
-                        generate_alarm(0,m,payload[0],payload[1])
+			save_measure(payload[0],m,payload[1],payload[2])
+                        generate_alarm(0,m,payload[1],payload[2])
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
     parser.add_argument('--port', '-p', action='store', type=int, help='network port to connect to (default is 1883)')
