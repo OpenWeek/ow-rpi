@@ -42,6 +42,7 @@ import os
 import threading
 import paho.mqtt.client as mqtt
 import yaml
+import argparse
 
 #default device
 device = "i2c-1"
@@ -51,6 +52,12 @@ si1132 = SI1132.SI1132(device)
 bme280 = BME280.BME280(device, 0x03, 0x02, 0x02, 0x02)
 
 client = None
+
+broker = 'localhost'
+port = 1883
+timeStep = 300
+pi_id = 0
+data = {}
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -83,13 +90,14 @@ class ReadAndSend(threading.Thread):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
-    parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
-    parser.add_argument('--host', '-H', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
-    parser.add_argument('--timeStep', '-t', action='store', default=300, type=int, help='frequency of data sending in seconds (default is 300)')
-    parser.add_argument('--id', action='store', default=0, type=int, help='set the pi\'s id (default is 0)')
-    
+    parser.add_argument('--port', '-p', action='store', type=int, help='network port to connect to (default is 1883)')
+    parser.add_argument('--host', '-H', action='store', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--timeStep', '-t', action='store', type=int, help='frequency of data sending in seconds (default is 300)')
+    parser.add_argument('--id', action='store', type=int, help='set the pi\'s id (default is 0)')
+    args = parser.parse_args()
+
     try:
-        with open("../config/weatherBoard.yaml", 'r') as stream:
+        with open("../config/weather_board.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -97,19 +105,29 @@ if __name__ == '__main__':
     except IOError as exc:
         print(exc)
     
-    if 'BROKER' in data:
-        broker = data['BROKER']
-    if 'BROKER_PORT' in data:
-        port = data['BROKER_PORT']
-    if 'TIMESTEP' in data:
-        timeStep = data['TIMESTEP']
-    if 'ID' in data:
-        pi_id = data['ID']
+    if args.host == None:
+        if 'BROKER' in data:
+            broker = data['BROKER']
+    else:
+        broker = args.host
 
-    args = parser.parse_args()
-    broker = args.host
-    port = args.port
-    timeStep = args.timeStep
+    if args.port == None:
+        if 'BROKER_PORT' in data:
+            port = data['BROKER_PORT']
+    else:
+        port = args.port
+
+    if args.timeStep == None:
+        if 'TIMESTEP' in data:
+            timeStep = data['TIMESTEP']
+    else:
+        timeStep = args.timeStep
+    
+    if args.id == None:
+        if 'ID' in data:
+            pi_id = data['ID']
+    else:
+        pi_id = args.id
 
     client = mqtt.Client("owid2")
     client.on_connect = on_connect

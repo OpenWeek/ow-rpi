@@ -1,0 +1,58 @@
+parameters: # This is to give info about all the different parameters and could be used in code
+  - label     # Legend-label
+  - unit      # the unit of the values
+  - color     # the color of the line
+  - position  # y-axis on the right or left
+  - min         # suggestedMin for the graph
+  - max         # suggestedMax
+  - startHidden # If the axis is hidden at the start or not
+measures:
+  TEMPERATURE:
+    label: Temperature
+    unit: "°C"
+    color: "#2A3D45"
+    position: left
+    min: 15
+    max: 30
+    startHidden: false
+  PRESSURE:
+    label: Pressure
+    unit: hPa
+    color: "#26AD5E"
+    position: right
+    min: 990
+    max: 1120
+    startHidden: false
+  HUMIDITY:
+    label: Humidity
+    unit: "%"
+    color: "#38AECC"
+    position: right
+    min: 20
+    max: 70
+    startHidden: false
+  INFRARED:
+    label: Infrared
+    unit: "lux"
+    color: "#DB2B39"
+    position: left
+    min: 0
+    max: 100
+    startHidden: true
+  ULTRAVIOLET:
+    label: Ultraviolet Index
+    unit: "%"
+    color: "#BD64D6"
+    position: right
+    min: 0.2
+    max: 0.7
+    startHidden: true
+  LUMINOSITY:
+    label: Luminosity
+    unit: "lux"
+    color: "#EAAF38"
+    position: right
+    min: 0
+    max: 100
+    startHidden: false
+#B1740F: another nice color for further measures

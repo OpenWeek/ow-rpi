@@ -21,29 +21,30 @@ import time
 import unittest
 import os
 
-class TestStringMethods(unittest.TestCase):
+class TestDBMethods(unittest.TestCase):
     def setUp(self):
         self.interval = 7*24*3600
         start = time.time() - self.interval
         self.name1 = "test_temperature"
         self.name2 = "test_pressure"
         self.suffix = ".rrd"
-
+        self.pi_index = 0
         temp_base = 10
         temp_mul = 0.01
         pressure_base = 1000
         pressure_mul = 0.1
 
-        init_measure(self.name1, temp_base, 1+temp_base+temp_mul*(self.interval/300))
-        init_measure(self.name2, pressure_base, 1+pressure_base+pressure_mul*(self.interval/300))
+        init_measure(self.pi_index,self.name1)
+        init_measure(self.pi_index,self.name2)
 
         for t in range(self.interval/300):
             save_measure(0, self.name1, start+t*300, temp_base+temp_mul*t)
 
     def test_save_measure(self):
-        self.assertTrue(os.path.exists("../storage"))
-        self.assertTrue(os.path.isfile("../storage/"+self.name1+self.suffix))
-        self.assertTrue(os.path.isfile("../storage/"+self.name2+self.suffix))
+        self.assertTrue(os.path.exists("ow_rpi/storage"))
+        print "ow_rpi/storage/"+str(self.pi_index)+self.name1+self.suffix
+        self.assertTrue(os.path.isfile("ow_rpi/storage/"+"pi"+str(self.pi_index)+"_"+self.name1+self.suffix))
+        self.assertTrue(os.path.isfile("ow_rpi/storage/"+"pi"+str(self.pi_index)+"_"+self.name2+self.suffix))
     #should find only one None at the end of the list because there is no measure registered yet
     #
     def test_no_None(self):

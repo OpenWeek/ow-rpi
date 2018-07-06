@@ -17,19 +17,35 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from ow_rpi.alarm.db_alarm import *
+import unittest
+import os
 
-init_db()
+class TestDBMethods(unittest.TestCase):
+    def setUp(self):
+		self.measure_temp = "temperature"
+		self.pi_id = 0
+		init_db()
+		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 14)
+		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 16)
+		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 21)
+		generate_alarm(self.pi_id, self.measure_temp, 1530807202, 23)
 
-generate_alarm(0,"temperature", 1530807202, 14)
-generate_alarm(0,"temperature", 1530807202, 16)
-generate_alarm(0,"temperature", 1530807202, 21)
-generate_alarm(0,"temperature", 1530807202, 23)
-mytest = [(1530807202, u'temperature', 14.0, 0, u'2'), (1530807202, u'temperature', 16.0, 0, u'1'), (1530807202, u'temperature', 21.0, 0, u'1'), (1530807202, u'temperature', 23.0, 0, u'2')]
-values = get_log_all("temperature")
-ok = True
-for i in range(len(values)):
-	for j in range(len(values[i])):
-		if mytest[i][j] != values[i][j]:
-			ok = False
-			
-print ok
+    def test_alarm1(self):
+		mytest = [['2018-07-05 18:13:22', u''+self.measure_temp, 14.0, 0, u'-2'], ['2018-07-05 18:13:22', u''+self.measure_temp, 16.0, 0, u'-1'], ['2018-07-05 18:13:22', u''+self.measure_temp, 21.0, 0, u'1'], ['2018-07-05 18:13:22', u''+self.measure_temp, 23.0, 0, u'2']]
+		
+		values = get_log_all(self.measure_temp)
+		print values
+		for i in range(len(values)):
+			for j in range(len(values[i])):
+				self.assertEqual(mytest[i][j], values[i][j])
+
+if __name__ == '__main__':
+    unittest.main()
+
+# init_db()
+# generate_alarm(0,"temperature", 1530807202, 14)
+# generate_alarm(1,"temperature", 1530807202, 16)
+# generate_alarm(0,"humidity", 1530807202, 21)
+# generate_alarm(1,"humidity", 1530807202, 23)
+# values = get_log_all()
+# print values

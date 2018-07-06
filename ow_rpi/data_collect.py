@@ -26,6 +26,9 @@ import sys
 import argparse
 import yaml
 
+broker = 'localhost'
+port = 1883
+keepalive = 300
 data = {}
 client = None
 channel = "OWRPI/"
@@ -46,16 +49,17 @@ def on_message(client, userdata, msg):
     payload = msg.payload.split(" - ")
     for m in measures :
 		if msg.topic == channel + m :
-			save_measure(0,m,payload[0],payload[1])
-                        generate_alarm(0,m,payload[0],payload[1])
+			save_measure(payload[0],m,payload[1],payload[2])
+                        generate_alarm(0,m,payload[1],payload[2])
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Collect data from (multiple ?) raspberri pi using mqtt')
-    parser.add_argument('--port', '-p', action='store', default=1883, type=int, help='network port to connect to (default is 1883)')
-    parser.add_argument('--host', '-H', action='store', default='localhost', help='mqtt host to connect to (default is localhost)')
-    parser.add_argument('--keepalive', '-k', action='store', default=300, type=int, help='time while the connection is maintained when no data is transmitted in seconds (default is 300)')
+    parser.add_argument('--port', '-p', action='store', type=int, help='network port to connect to (default is 1883)')
+    parser.add_argument('--host', '-H', action='store', help='mqtt host to connect to (default is localhost)')
+    parser.add_argument('--keepalive', '-k', action='store', type=int, help='time while the connection is maintained when no data is transmitted in seconds (default is 300)')
+    args = parser.parse_args()
 
     try:
-        with open("ow_rpi/config/data_collect.yaml", 'r') as stream:
+        with open("./config/data_collect.yaml", 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -63,17 +67,24 @@ if __name__ == '__main__':
     except IOError as exc:
         print(exc)
 
-    if 'BROKER' in data:
-        broker = data['BROKER']
-    if 'BROKER_PORT' in data:
-        port = data['BROKER_PORT']
-    if 'BROKER_KEEPALIVE' in data:
-        keepalive = data['BROKER_KEEPALIVE']
+    if args.host == None:
+        if 'BROKER' in data:
+            broker = data['BROKER']
+    else:
+        broker = args.host
 
-    args = parser.parse_args()
-    broker = args.host
-    port = args.port
-    keepalive = args.keepalive
+    if args.port == None:
+        if 'BROKER_PORT' in data:
+            port = data['BROKER_PORT']
+    else:
+        port = args.port
+    
+    if args.keepalive == None:
+        if 'BROKER_KEEPALIVE' in data:
+            keepalive = data['BROKER_KEEPALIVE']
+    else:
+        keepalive = args.keepalive
+
     
 signal.signal(signal.SIGINT, signal_handler)
 
