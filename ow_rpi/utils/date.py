@@ -44,7 +44,7 @@ def date_to_timestamp(date, format = datetimeformat):
         Retourne la date sous le format <timestamp POSIX>.
 
     """
-    return int(time.mktime(datetime.datetime.strptime(date, datetimeformat).timetuple()))
+    return int(time.mktime(datetime.datetime.strptime(date, format).timetuple()))
 
 def timestamp_to_isoformat(now):
     """Fonction qui transforme une date de format <timestamp POSIX> en format <ISO 8601>.
