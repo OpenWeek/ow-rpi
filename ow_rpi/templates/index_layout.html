@@ -192,7 +192,7 @@
   window.onload = function () {
       var ctx       = document.getElementById("myChart").getContext("2d");
       window.myChart = new Chart(ctx, config);
-      dataInd.forEach(function(i) => {
+      dataInd.forEach(function(i) {
         if (dataParams.startHidden[i]){
           window.myChart.getDatasetMeta(i).hidden = true; //hide line
           visibleAxes[i] = false; //hide axes
