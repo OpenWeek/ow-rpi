@@ -22,16 +22,16 @@ import fcntl
 import rrdtool
 import sys
 
-directory = "../storage"
+directory = "ow_rpi/storage"
 path = directory+"/"
 
 def init_measure(pi_id, measure):
     if not os.path.exists(directory):
         os.makedirs(directory)
-
+    pistring = str(pi_id)
     rrdtool.create(
        # "ow_rpi/storage/"+name+".rrd",
-        path+"pi"+str(pi_id)+"_"+measure+".rrd",
+        path+"pi"+pistring+"_"+measure+".rrd",
         "--start", "-1y",
         "--step", "30",
         "RRA:LAST:0.5:1:10",
@@ -40,7 +40,7 @@ def init_measure(pi_id, measure):
         "RRA:AVERAGE:0.5:2880:7",
         "RRA:AVERAGE:0.5:20160:4",
         "RRA:AVERAGE:0.5:80640:12",
-        "DS:measure:GAUGE:3600:U:U)
+        "DS:measure:GAUGE:3600:U:U")
 
 
 """
