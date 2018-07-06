@@ -22,6 +22,8 @@
 import web
 import json
 import yaml
+from ow_rpi.alarm.db_alarm import *
+from ow_rpi.utils.date import *
 from ow_rpi.db_handler.db_handler import *
 
 from jinja2 import Environment, FileSystemLoader
@@ -124,8 +126,24 @@ class log:
 
 class log_table:
     def GET(self):
+        data = web.input()
+        if data.measure == "None":
+            data.measure = None
+        if data.station == "None":
+            data.station = None
+        if data.start == "None":
+            data.start = 0
+        else:
+            data.start = date_to_timestamp(data.start,"%d/%m/%y")
+        if data.end == "None":
+            data.end = None
+        else:
+            data.end = date_to_timestamp(data.end,"%d/%m/%y");
+
+
         context = {
-            "log":[["6/07/2018",1,"Pressure",1001,2]]
+                "log": get_log_from(data.start,data.end,data.measure,data.station,None),
+                "tmp": data.measure
         }
         return render_template("logtable.html",**context)
 
