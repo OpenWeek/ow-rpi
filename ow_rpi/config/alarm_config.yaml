@@ -31,5 +31,6 @@ infrared:
   MAXMAX : 900
 list_email:
   - archein.lol@gmail.com 
+  - tagazok@hotmail.com
 database:
   name : alarm_database

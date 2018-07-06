@@ -16,7 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import db_handler as db
+#import db_handler as db
+import yaml
+
+def get_config():
+    with open("../config/db_config.yaml", 'r') as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 if __name__ == '__main__':
     """
@@ -27,13 +35,8 @@ if __name__ == '__main__':
     db.init_measure('ultraviolet', 0, 5000)
     db.init_measure('infrared', 0, 5000)
     """
-
-    list_pi = range(4)
-
-    for i in list_pi:
-        db.init_measure(i, 'temperature', -273.15, 200)
-        db.init_measure(i, 'pressure', 800, 1300)
-        db.init_measure(i, 'luminosity', 0, 150000)
-        db.init_measure(i, 'humidity', 0, 5000)
-        db.init_measure(i, 'ultraviolet', 0, 5000)
-        db.init_measure(i, 'infrared', 0, 5000)
+    config = get_config()
+    measures = config['measures'].split(" ")
+    for i in range(config['number_of_pi']):
+        for m in measures:
+            db.init_measure(i,m)

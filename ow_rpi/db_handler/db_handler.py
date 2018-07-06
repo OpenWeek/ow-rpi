@@ -25,7 +25,7 @@ import sys
 directory = "../storage"
 path = directory+"/"
 
-def init_measure(pi_id, measure, min, max):
+def init_measure(pi_id, measure):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -40,7 +40,7 @@ def init_measure(pi_id, measure, min, max):
         "RRA:AVERAGE:0.5:2880:7",
         "RRA:AVERAGE:0.5:20160:4",
         "RRA:AVERAGE:0.5:80640:12",
-        "DS:measure:GAUGE:3600:"+str(min)+":"+str(max))
+        "DS:measure:GAUGE:3600:U:U)
 
 
 """

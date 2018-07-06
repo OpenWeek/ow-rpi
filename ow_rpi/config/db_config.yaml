@@ -1,0 +1,10 @@
+---
+measures:
+  humidity
+  temperature
+  pressure
+  luminosity
+  ultraviolet
+  infrared
+number_of_pi:
+  1
