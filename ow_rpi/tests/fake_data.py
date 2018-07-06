@@ -27,11 +27,15 @@ if __name__ == '__main__':
     start = now-interval
 
     for t in range(start, now, 30):
-        var = float(rd.randint(-1000,1000))/10000
-        var2 = float(rd.randint(-1000,1000))/1000
-        save_measure(0, 'temperature', t, 18+var)
-        save_measure(0, 'pressure', t, 1000+var2)
-        save_measure(0, 'humidity', t, 68+var)
-        save_measure(0, 'luminosity', t, 1000+var)
-        save_measure(0, 'infrared', t, 29+var2)
-        save_measure(0, 'ultraviolet', t, 0.02+var/100)
+        save_measure(0, 'temperature', t, 18+float(rd.randint(-1000,1000))/10000)
+        save_measure(0, 'pressure', t, 1000+float(rd.randint(-1000,1000))/1000)
+        save_measure(0, 'humidity', t, 68+float(rd.randint(-1000,1000))/10000)
+        save_measure(0, 'luminosity', t, 1000+float(rd.randint(-1000,1000))/10000)
+        save_measure(0, 'infrared', t, 29+float(rd.randint(-1000,1000))/1000)
+        save_measure(0, 'ultraviolet', t, 0.02+float(rd.randint(-1000,1000))/1000000)
+        save_measure(1, 'temperature', t, 18+float(rd.randint(-1000,1000))/10000)
+        save_measure(1, 'pressure', t, 1000+float(rd.randint(-1000,1000))/1000)
+        save_measure(1, 'humidity', t, 68+float(rd.randint(-1000,1000))/10000)
+        save_measure(1, 'luminosity', t, 1000+float(rd.randint(-1000,1000))/10000)
+        save_measure(1, 'infrared', t, 29+float(rd.randint(-1000,1000))/1000)
+        save_measure(1, 'ultraviolet', t, 0.02+float(rd.randint(-1000,1000))/1000000)
