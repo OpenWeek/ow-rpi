@@ -49,53 +49,69 @@ def save_log(timestamp, measure, value, station, degree):
 	conn.commit()
 	conn.close()
 	
-def get_log_now(measure):
+def get_log_now(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -300, now)
+    return get_log_from( now -300, now, measure,station, gravity)
 
-def get_log_minute(measure):
-    return get_log_now(measure)
+def get_log_minute(measure = None, station = None, gravity = None):
+    return get_log_now(measure, station, gravity)
 
-def get_log_hour(measure):
+def get_log_hour(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -3600, now)
+    return get_log_from(now -3600, now, measure, station, gravity)
 
-def get_log_day(measure):
+def get_log_day(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now - (24*3600), now)
+    return get_log_from(now - (24*3600), now,measure, station, gravity)
 
-def get_log_week(measure):
+def get_log_week(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -(7*24*3600), now)
+    return get_log_from(now -(7*24*3600), now,measure, station, gravity)
 
-def get_log_month(measure):
+def get_log_month(measure = None, station = None, gravity = None):
     now = get_now()
-    return get_log_from(measure, now -(4*7*24*3600), now)
+    return get_log_from( now -(4*7*24*3600), now, measure, station, gravity)
     
-def get_log_from(measure, start, end):
+def get_log_from(start, end, measure = None, station = None, gravity = None):
 	conn = get_database()
 	c = conn.cursor()
-	print "SELECT * FROM log where measure = '"+ measure +"' AND '"+ str(start) +"' <= timestamp AND timestamp <= '" + str(end) + "'"
-	test = c.execute("SELECT * FROM log where measure = '"+ measure +"' AND "+ str(start) +" <= timestamp AND timestamp <= " + str(end) )
-	result = []
-	for i in test:	
-		result.append(i)
+	query = "SELECT * FROM log where "
+	if measure != None :
+		query +=  "measure = '"+ measure +"' AND "
+	if station != None :
+		query +=  "station = '"+ str(station) +"' AND "
+	if gravity != None :
+		query +=  "degree = '"+ str(gravity) +"' AND "
+	query += str(start) +" <= timestamp AND timestamp <= " + str(end)
+	test = c.execute(query)
+	result = transform_date(test)
 	conn.close()
 	return result
 	
-def get_log_all(measure):
+def get_log_all(measure = None):
 	conn = get_database()
 	c = conn.cursor()
-	test = c.execute("SELECT * FROM log where measure = '"+ measure  + "'")
-	result = []
-	for i in test:
-		result.append(i)
+	if measure is not None:
+		test = c.execute("SELECT * FROM log where measure = '"+ measure  + "'")
+	else:
+		test = c.execute("SELECT * FROM log")
+	result = transform_date(test)
 	conn.close()
 	return result	
 	
 def get_now():
 	return int(time.time())
 
+def transform_date(info):
+	result = []
+	for i in info:
+		column = []
+		column.append(timestamp_to_date(i[0]))
+		for j in range(1,len(i)) :
+			column.append(i[j])
+		result.append(column)
+	return result
+	
 def generate_alarm(station, measure, timestamp, value):
 	config = get_config()
 	alarm = True

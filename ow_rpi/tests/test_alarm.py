@@ -39,3 +39,11 @@ class TestDBMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# init_db()
+# generate_alarm(0,"temperature", 1530807202, 14)
+# generate_alarm(1,"temperature", 1530807202, 16)
+# generate_alarm(0,"humidity", 1530807202, 21)
+# generate_alarm(1,"humidity", 1530807202, 23)
+# values = get_log_all()
+# print values

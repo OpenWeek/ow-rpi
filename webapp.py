@@ -21,6 +21,7 @@
 
 import web
 import json
+import yaml
 from ow_rpi.db_handler.db_handler import *
 
 from jinja2 import Environment, FileSystemLoader
@@ -117,7 +118,7 @@ class log:
     def GET(self):
      context = {
              "log":[1,2,3,4,5,6,7]
-	 
+
         }
      return render_template("log.html",**context)
 
