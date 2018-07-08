@@ -36,4 +36,6 @@ lighttpd -D -f lighttpd.conf
 ## License
 This projet is under the GNU GPL v3 license, see the LICENSE file for details
 ## Authors
-Benjamin De Cnuydt, Maxime Franco, Lucas Ody, Maxime Postaire, Nicolas Rybowski
+Benjamin De Cnuydt, Quentin Delmelle, Robin Descamps
+Colin Evrard, Maxime Franco, Lucas Ody, 
+Maxime Postaire, Nicolas Rybowski, Antoine Vanderschueren.
